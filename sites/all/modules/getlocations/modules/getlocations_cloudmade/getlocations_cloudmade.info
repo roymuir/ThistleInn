@@ -1,0 +1,15 @@
+name = GetLocations Cloudmade
+description = "Provides Cloudmade Maps integration for Getlocations."
+core = 7.x
+php = 5
+package = "Location"
+dependencies[] = getlocations_leaflet
+
+
+
+; Information added by Drupal.org packaging script on 2014-06-19
+version = "7.x-1.13"
+core = "7.x"
+project = "getlocations"
+datestamp = "1403177328"
+

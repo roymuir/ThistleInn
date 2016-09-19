@@ -1,0 +1,65 @@
+; $Id: thistleinn.info,v 1.0 Selen Exp $
+
+; Theme Info -----------------------------------------------------------------
+; required information about the theme
+
+name = thistleinn
+description = This template is made by <a href="http://www.roymuir.com">roymuir.com</a>
+screenshot = screenshot.png
+core = 7.x
+engine = phptemplate
+
+; Stylesheets  ---------------------------------------------------------------
+; We use [screen] instead of [all] to avoid browser styles affecting 
+; other media types.
+
+stylesheets[screen][] = css/boilerplate.css
+stylesheets[screen][] = css/style.css
+stylesheets[screen][] = css/maintenance-page.css
+stylesheets[screen][] = css/skeleton.css
+stylesheets[screen][] = css/jquery.mmenu.css
+
+scripts[] = js/libs/jquery.numeric.js
+scripts[] = js/thistleinn.core.js
+scripts[] = js/jquery.mmenu.min.js
+scripts[] = js/jquery.loader.js
+
+; Regions --------------------------------------------------------------------
+; these content regions are available for block placement
+; some are special hidden regions: page_top, page_bottom, and help
+
+; these are the stock regions
+regions[header-left] = Header left
+regions[header-center] = Header center
+regions[header-right] = Header right
+regions[menu] = Menu
+regions[menu-left] = Menu left
+regions[menu-right] = Menu right
+regions[help] = Help
+
+regions[content_top] = Content top
+regions[content] = Content
+regions[content_bottom] = Content bottom
+
+regions[sidebar_first] = Sidebar first
+regions[sidebar_second] = Sidebar second
+
+regions[footer] = Footer
+regions[footer-bottom] = Footer bottom
+
+regions[page_top] = Page top
+regions[page_bottom] = Page bottom
+regions[highlighted] = Highlighted
+
+; Options --------------------------------------------------------------------
+; these are the checkboxes that are available on the theme settings page.
+
+; additional theme settings
+settings[thistleinn_feed_icons] = 0
+settings[thistleinn_clear_registry] = 0
+settings[thistleinn_tabs_float] = 0
+settings[thistleinn_tabs_node] = 1
+settings[thistleinn_breadcrumb_display]   = no
+settings[thistleinn_breadcrumb_hideonlyfront] = 1
+settings[thistleinn_breadcrumb_showtitle] = 0
+settings[thistleinn_breadcrumb_separator] = '»'
