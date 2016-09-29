@@ -15,3 +15,12 @@ function hacked_schema() {
 
   return $tables;
 }
+
+/**
+ * Implements hook_uninstall().
+ */
+function hacked_uninstall() {
+  variable_del('hacked_selected_file_hasher');
+  variable_del('hacked_cvs_cmd');
+  variable_del('hacked_last_report');
+}

@@ -1646,28 +1646,29 @@ label.option {vertical-align:middle;}
 	background: none;
 	padding: 0;
 }
-.event-image {
+#block-views-events-block .event-image {
 	float: left;
 	margin-right: 10px;
 	width: 80px;
 	height: 80px;
 }
 
-.event-image img {
+#block-views-events-block .event-image img {
 	width: 100%;
 	height: auto;
 }
 
-.event-title {
-	float: left;
-	width: 165px;
-}
-.event-body {
+#block-views-events-block .event-title {
 	float: left;
 	width: 165px;
 }
 
-.event-body p:last-child {
+#block-views-events-block .event-body {
+	float: left;
+	width: 165px;
+}
+
+#block-views-events-block .event-body p:last-child {
 	margin-bottom: 0;
 }
 
@@ -1675,6 +1676,10 @@ label.option {vertical-align:middle;}
 #block-views-whats-on-pdf-download-block {
 	margin-bottom: 30px !important;
 	padding-bottom: 0 !important;
+}
+
+.front #block-views-events-block {
+	margin-bottom: 0 !important;
 }
 
 #block-views-events-block .views-row:after {
@@ -2167,6 +2172,51 @@ textarea {
 }
 
 
+/* Events page */
+#content #block-views-events-block-1 {
+	margin-bottom: 0;
+}
+
+.view-display-id-block_1 .event {
+	border-bottom: 1px solid #b4873d;
+	padding-bottom: 30px;
+	margin-bottom: 30px;
+}
+
+.view-display-id-block_1 .event.views-row-last {
+	margin-bottom: 0;
+	padding-bottom: 0;
+	border-bottom: none;
+}
+
+.view-display-id-block_1 .event-image {
+	float: left;
+	width: 28%;
+	margin-right: 2%;
+}
+
+.view-display-id-block_1 .event-content {
+	float: left;
+	width: 70%;
+}
+
+.view-display-id-block_1 .event-image img {
+	max-width: 100%;
+	height: auto;
+}
+
+.view-display-id-block_1 .date-display-single {
+	margin-bottom: 15px;
+	display: block;
+	font-weight: bold;
+	font-size: 11px;
+}
+
+.view-display-id-block_1 .event-content p:last-child {
+	margin-bottom: 0;
+}
+
+
 /* ------------------------- MEDIA QUERIES ------------------------- */
 
 @media only screen  and (max-width: 1220px) {
@@ -2525,6 +2575,21 @@ textarea {
 		padding-right: 0 !important;
 		width: 100% !important;
 		height: auto;
+	}
+
+	.view-display-id-block_1 .event-image {
+		float: none;
+		width: 100%;
+		margin-right: 0;
+	}
+
+	.view-display-id-block_1 .event-content {
+		float: none;
+		width: 100%;
+	}
+
+	.view-display-id-block_1 .event-image {
+		margin-bottom: 20px;
 	}
 	
 }

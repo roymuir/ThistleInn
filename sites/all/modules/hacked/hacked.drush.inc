@@ -38,7 +38,7 @@ function hacked_drush_command() {
     'description' => "List all projects that can be analysed by Hacked! ",
     'drupal dependencies' => array('hacked'),
     'options' => array(
-      '--force-rebuild' => 'Rebuild the Hacked! report instead of getting a cached version.'
+      'force-rebuild' => 'Rebuild the Hacked! report instead of getting a cached version.'
     ),
     'aliases' => array('hlp'),
   );
@@ -55,7 +55,7 @@ function hacked_drush_command() {
       'project' => 'The machine name of the project to report on.',
     ),
     'options' => array(
-      '--include-unchanged' => 'Show the files that are unchanged too.',
+      'include-unchanged' => 'Show the files that are unchanged too.',
     ),
     'aliases' => array('hd'),
   );
@@ -67,7 +67,7 @@ function hacked_drush_command() {
       'project' => 'The machine name of the project to report on.',
     ),
     'options' => array(
-      '--diff-options' => 'Command line options to pass through to the diff command.'
+      'diff-options' => 'Command line options to pass through to the diff command.'
     ),
   );
 
@@ -81,7 +81,7 @@ function hacked_drush_command() {
  * So you'll want to be very careful if you call this!
  */
 function hacked_calculate_project_data_drush($projects, $force = FALSE, $redirect = NULL) {
-  include_once './includes/batch.inc';
+  include_once DRUPAL_ROOT . '/includes/batch.inc';
 
   // Try to get the report form cache if we can.
   $cache = cache_get('hacked:drush:full-report', HACKED_CACHE_TABLE);

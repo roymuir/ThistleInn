@@ -131,6 +131,7 @@ function mailchimp_lists_cron() {
 
   // Claim items off the queue and organize them into batches:
   if ($queue_count > 0) {
+    $lists_by_mc_id = array();
     $batches_add = array();
     $batches_rem = array();
     $count = 0;
@@ -139,6 +140,9 @@ function mailchimp_lists_cron() {
     while ($count < $batch_size) {
       if ($item = $queue->claimItem()) {
         $list = mailchimp_lists_load($item->data['list_id']);
+        $mc_list_id = $list->mc_list_id;
+        // Store this list object so we can reference it later by its MC ID.
+        $lists_by_mc_id[$mc_list_id] = $list;
         // If all we have is an anonymous email, load it. We check for a value
         // first to be backwards-compatible with versions that didn't pass the
         // raw email into the queue item.
@@ -163,11 +167,11 @@ function mailchimp_lists_cron() {
             if (!empty($item->data['groupings'])) {
               $mergevars['GROUPINGS'] = $item->data['groupings'];
             }
-            $batches_add[$list->mc_list_id][] = $mergevars;
+            $batches_add[$mc_list_id][] = $mergevars;
             break;
 
           case 'remove':
-            $batches_rem[$list->mc_list_id][] = $email;
+            $batches_rem[$mc_list_id][] = $email;
             break;
         }
 
@@ -203,7 +207,9 @@ function mailchimp_lists_cron() {
     $add_count = $update_count = 0;
     foreach ($batches_add as $listid => $batch) {
       if (count($batch)) {
-        $ret = $mcapi->listBatchSubscribe($listid, $batch, TRUE, TRUE);
+        $list_settings = $lists_by_mc_id[$listid]->settings;
+        $double_opt_in = $list_settings['doublein'];
+        $ret = $mcapi->listBatchSubscribe($listid, $batch, $double_opt_in, TRUE);
         if ($ret['error_count'] > 0) {
           foreach ((array) $ret['errors'] as $error) {
             watchdog('mailchimp', 'MCAPI Error: %errmsg', array('%errmsg' => $error['message']), WATCHDOG_ERROR);
@@ -387,7 +393,7 @@ function mailchimp_lists_user_subscribe_page($account) {
     return (t('There are no available newsletter subscriptions.'));
   }
   $form = drupal_get_form('mailchimp_lists_user_subscribe_form', $lists, $account);
-  $form['submit']['#value'] = 'Save';
+  $form['submit']['#value'] = t('Save');
   return $form;
 }
 
@@ -756,7 +762,11 @@ function mailchimp_lists_load_user_mergevars($account, $list, $interest_groups =
     foreach ($mergevars as $name => $token) {
       // Match with token values:
       $replaced = module_invoke_all('mailchimp_lists_merge_values', array($token => $name), $account, $list);
-      $values[$name] = $replaced[$name];
+      // Only populate our merge variables if the replacement was successful,
+      // some configured tokens might not always be available.
+      if (isset($replaced[$name])) {
+        $values[$name] = $replaced[$name];
+      }
     }
     // Always add email:
     $values += array(
@@ -996,9 +1006,11 @@ function mailchimp_lists_queue_existing($list, $queue_removals = FALSE) {
   foreach ($users as $user) {
     $intersect = array_intersect(array_keys($user->roles), $list->settings['roles']);
     if (!empty($intersect)) {
-      $merge_vars = mailchimp_lists_load_user_mergevars($user, $list);
-      mailchimp_lists_execute_change('add', $list, $user->mail, $merge_vars, $user, NULL, $queue);
-      $count++;
+      if ($list->settings['required']) {
+        $merge_vars = mailchimp_lists_load_user_mergevars($user, $list);
+        mailchimp_lists_execute_change('add', $list, $user->mail, $merge_vars, $user, NULL, $queue);
+        $count++;
+      }
     }
     elseif ($queue_removals) {
       if (mailchimp_is_subscribed($list->mc_list_id, $user->mail)) {
@@ -1144,4 +1156,31 @@ function mailchimp_lists_save(MailchimpList $list) {
  */
 function mailchimp_list_create(array $values = array()) {
   return entity_get_controller('mailchimp_list')->create($values);
+}
+
+/**
+ * Implements hook_mollom_form_list().
+ *
+ * Enable Mollom integration for user subscription forms.
+ */
+function mailchimp_lists_mollom_form_list() {
+  $forms = array();
+  $forms['mailchimp_lists_user_subscribe_form'] = array(
+    'title' => t('User newsletter subscription'),
+  );
+
+  return $forms;
+}
+
+/**
+ * Implements hook_mollom_form_info().
+ */
+function mailchimp_lists_mollom_form_info($form_id) {
+  // Set mollom form info.
+  $form_info = array(
+    'bypass access' => array('administer mailchimp'),
+    'mode' => MOLLOM_MODE_CAPTCHA,
+  );
+
+  return $form_info;
 }

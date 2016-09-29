@@ -10,9 +10,9 @@ files[] = mailchimp_activity.entity.inc
 files[] = mailchimp_activity.ui_controller.inc
 
 
-; Information added by drupal.org packaging script on 2013-07-25
-version = "7.x-2.12"
+; Information added by Drupal.org packaging script on 2016-02-23
+version = "7.x-2.13"
 core = "7.x"
 project = "mailchimp"
-datestamp = "1374771079"
+datestamp = "1456187360"
 
