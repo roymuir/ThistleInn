@@ -2216,6 +2216,16 @@ textarea {
 	margin-bottom: 0;
 }
 
+.view-events .views-field-field-external-link {
+	float: left;
+	width: 70%;
+	margin-top: 20px;
+}
+
+.fa-external-link {
+	margin-left: 6px;
+}
+
 
 /* ------------------------- MEDIA QUERIES ------------------------- */
 
