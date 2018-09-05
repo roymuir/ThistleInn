@@ -136,9 +136,9 @@
                                 </div></div> <!-- /.section, /#messages -->
                               <?php endif; ?>
                             
-                            <?php if ($node->type != 'basic_page_image_slider' && $node->type != 'page' && $node->type != 'menu') { ?>
+                            <?php if ($node->type != 'basic_page_image_slider' && $node->type != 'page' && $node->type != 'menu') : ?>
                               <h2 class="title" id="page-title"><?php print $title; ?></h2>
-                            <?php } ?>
+                            <?php endif; ?>
                                                         
                             <?php if ($tabs): ?>
                               <div class="tabs"><?php print render($tabs); ?></div>
