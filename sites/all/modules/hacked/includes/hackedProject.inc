@@ -93,6 +93,15 @@ class hackedProject {
             }
           }
         }
+        elseif ($this->isDevVersion()) {
+          foreach ($project['includes'] as $name => $title) {
+            if (is_dir(drupal_get_path($project['project_type'], $name))) {
+              // Use the dev downloader as this isn't a formal release.
+              $this->remote_files_downloader = new hackedProjectWebDevDownloader($this);
+              break;
+            }
+          }
+        }
 
         $this->project_identified = TRUE;
         $this->existing_version = $this->project_info['existing_version'];
@@ -105,6 +114,20 @@ class hackedProject {
     if (!$this->project_identified) {
       watchdog('hacked', 'Could not identify project: @name', array('@name' => $this->name), WATCHDOG_WARNING);
     }
+  }
+
+  /**
+   * Determines if the project is a development version or has an explicit release.
+   *
+   * @return boolean
+   *   TRUE if the project is a dev release; FALSE otherwise.
+   */
+  function isDevVersion() {
+    // Grab the version string.
+    $version = $this->project_info['existing_version'];
+
+    // Assume we have a dev version if the string ends with "-dev".
+    return (substr_compare($version, '-dev', -4, 4) === 0) ? TRUE : FALSE;
   }
 
   /**

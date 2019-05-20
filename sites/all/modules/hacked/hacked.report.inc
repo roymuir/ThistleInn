@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @file
+ * Report building utilities.
+ */
 
 /**
  * Page callback to build up a full report.
@@ -35,10 +38,14 @@ function hacked_reports_rebuild() {
  * Batch callback to build the hacked report.
  */
 function hacked_build_report_batch($project_name, &$context) {
+  // Add missing dependencies if the module isn't installed.
+  if (function_exists('drush_verify_cli') && drush_verify_cli()) {
+    hacked_load_drush_dependencies();
+  }
+
   if (!isset($context['results']['report'])) {
     $context['results']['report'] = array();
   }
-  module_load_include('inc', 'hacked', 'includes/hacked_project');
   $project = new hackedProject($project_name);
   $context['results']['report'][$project_name] = $project->compute_report();
   $context['message'] = t('Finished processing: @name', array('@name' => $project->title()));

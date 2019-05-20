@@ -2228,6 +2228,19 @@ textarea {
 	margin-left: 6px;
 }
 
+/*  Voucher iFrame  */
+.page-node-187 iframe,
+.page-node-188 iframe {
+	height: 520px;
+    width: 100%;
+    border-width: 0;
+    border-style: none;
+    overflow: auto;
+}
+
+.page-node-188 iframe {
+	height: 925px;
+}
 
 /* ------------------------- MEDIA QUERIES ------------------------- */
 

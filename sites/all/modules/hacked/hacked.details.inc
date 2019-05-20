@@ -26,11 +26,11 @@ function theme_hacked_detailed_report($variables) {
           break;
         case HACKED_STATUS_DELETED:
           $class = 'error';
-          $icon = theme('image', array('path' => 'misc/watchdog-error.png', 'alt' => t('Changed', array(), $translation_context), 'title' => t('Changed', array(), $translation_context)));
+          $icon = theme('image', array('path' => 'misc/watchdog-error.png', 'alt' => t('Deleted', array(), $translation_context), 'title' => t('Deleted', array(), $translation_context)));
           break;
         case HACKED_STATUS_HACKED:
           $class = 'warning';
-          $icon = theme('image', array('path' => 'misc/watchdog-warning.png', 'alt' => t('Deleted', array(), $translation_context), 'title' => t('Deleted', array(), $translation_context)));
+          $icon = theme('image', array('path' => 'misc/watchdog-warning.png', 'alt' => t('Changed', array(), $translation_context), 'title' => t('Changed', array(), $translation_context)));
           break;
         case HACKED_STATUS_PERMISSION_DENIED:
           $class = 'warning';

@@ -12,12 +12,12 @@ files[] = includes/hackedFileIgnoreEndingsHasher.inc
 files[] = includes/hackedFileIncludeEndingsHasher.inc
 files[] = includes/hackedProject.inc
 files[] = includes/hackedProjectWebCSVDownloader.inc
+files[] = includes/hackedProjectWebDevDownloader.inc
 files[] = includes/hackedProjectWebDownloader.inc
 files[] = includes/hackedProjectWebFilesDownloader.inc
 
-; Information added by Drupal.org packaging script on 2016-07-22
-version = "7.x-2.0-beta6"
+; Information added by Drupal.org packaging script on 2019-02-06
+version = "7.x-2.0-beta8"
 core = "7.x"
 project = "hacked"
-datestamp = "1469219651"
-
+datestamp = "1549435390"
