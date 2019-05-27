@@ -1,2 +1,2 @@
 # ThistleInn
-test deploy
+test deploy 2
