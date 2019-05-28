@@ -2229,14 +2229,16 @@ textarea {
 }
 
 /*  Voucher iFrame  */
-.page-node-187 .iframe-container iframe,
-.page-node-188 .iframe-container iframe {
+.page-node-187 iframe,
+.page-node-188 iframe {
 	border: 0;
 	width: 100%;
 	height: 1000px;
 	overflow-y: scroll;
 	overflow-x: hidden;
 }
+
+
 
 /* ------------------------- MEDIA QUERIES ------------------------- */
 
