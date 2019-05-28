@@ -2247,7 +2247,8 @@ textarea {
     height: 100%;
 }
 
-.page-node-236 .field-item.even p {
+.page-node-236 .field-item.even p,
+.page-node-242 .field-item.even p {
     position: relative;
     padding-top: 56.25%;
     margin-bottom: 0;
