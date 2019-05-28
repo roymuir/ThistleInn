@@ -2239,7 +2239,8 @@ textarea {
 }
 
 /*  Virtual tour iFrame  */
-.page-node-236 iframe {
+.page-node-236 iframe,
+.page-node-242 iframe {
 	position: absolute;
     top: 0;
     left: 0;
