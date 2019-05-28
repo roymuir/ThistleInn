@@ -2238,7 +2238,20 @@ textarea {
 	overflow-x: hidden;
 }
 
+/*  Virtual tour iFrame  */
+.page-node-236 iframe {
+	position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
 
+.page-node-236 .field-item.even p {
+    position: relative;
+    padding-top: 56.25%;
+    margin-bottom: 0;
+}
 
 /* ------------------------- MEDIA QUERIES ------------------------- */
 
