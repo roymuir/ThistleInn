@@ -2255,6 +2255,17 @@ textarea {
     margin-bottom: 0;
 }
 
+.node-type-basic-page-w-video-header .flexslider-wrapper {
+	position: relative;
+}
+
+.node-type-basic-page-w-video-header .divider-wrapper {
+	position: relative;
+	bottom: auto;
+	left: auto;
+	height: 60px;
+}
+
 /* ------------------------- MEDIA QUERIES ------------------------- */
 
 @media only screen  and (max-width: 1220px) {
