@@ -1902,8 +1902,21 @@ label.option {vertical-align:middle;}
 	padding-right: 30px;
 }
 
+#block-block-20 p:last-child {
+	margin: 0;
+}
+
 .block-mailchimp-signup .form-text {
 	width: 100%;
+}
+
+.block-mailchimp-signup .form-submit {
+	margin-bottom: 0;
+}
+
+#block-follow-site,
+#block-block-19 {
+	padding-top: 20px;
 }
 
 #block-views-portfolio-block-1 h2 {
@@ -2643,6 +2656,11 @@ textarea {
 
 	.view-display-id-block_1 .event-image {
 		margin-bottom: 20px;
+	}
+
+	#block-follow-site,
+	#block-block-19 {
+		padding-top: 0;
 	}
 	
 }
