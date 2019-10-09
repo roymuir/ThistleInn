@@ -1877,10 +1877,6 @@ label.option {vertical-align:middle;}
 	line-height: 1.2;
 }
 
-#block-follow-site {
-	padding: 0;
-}
-
 #block-views-portfolio-block-1,
 #block-views-tweets-block {
 	padding-right: 30px;
@@ -1900,6 +1896,14 @@ label.option {vertical-align:middle;}
 
 #edit-mailchimp-lists-mailchimp-thistle-inn-monthly-news-title {
 	display: none;
+}
+
+#block-block-20 {
+	padding-right: 30px;
+}
+
+.block-mailchimp-signup .form-text {
+	width: 100%;
 }
 
 #block-views-portfolio-block-1 h2 {
