@@ -1910,6 +1910,7 @@ label.option {vertical-align:middle;}
 	width: 100%;
 }
 
+.block-mailchimp-signup .form-actions,
 .block-mailchimp-signup .form-submit {
 	margin-bottom: 0;
 }
