@@ -58,3 +58,7 @@ theme772.image.preload = function() {
     theme772.image._cache.push(cacheImage);
   }
 }
+
+jQuery(document).ready(function($) {
+  $('.follow-links').append('<div class="follow-link-wrapper follow-link-wrapper-this-site"><a href="https://www.instagram.com/thethistleinn/?hl=en" class="follow-link follow-link-this-site follow-link-site" title="Follow Thistle Inn on Instagram"></a></div>');
+});
