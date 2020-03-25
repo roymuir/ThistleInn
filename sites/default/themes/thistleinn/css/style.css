@@ -366,7 +366,7 @@ body {-webkit-tap-highlight-color: rgb(183,140,60);}
 #block-menu-menu-main-menu-left .content > ul.menu > li,
 #block-menu-menu-main-menu-right .content > ul.menu > li {
 	display: inline-block;
-	margin-right: 15px;
+	margin-right: 6px;
 	padding: 0;
 	position: relative;
 }
@@ -383,7 +383,7 @@ body {-webkit-tap-highlight-color: rgb(183,140,60);}
     font-weight: 700;
     text-transform: uppercase;
     color: #3f3d4e;
-    padding: 6px 10px;
+    padding: 6px 9px;
     display: block;
 }
 
