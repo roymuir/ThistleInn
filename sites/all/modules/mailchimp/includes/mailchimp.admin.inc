@@ -144,22 +144,22 @@ function mailchimp_admin_settings() {
 }
 
 /**
- * MailChimp List cache clear form.
+ * MailChimp List/Audience cache clear form.
  */
 function mailchimp_clear_list_cache_form($form, &$form_state) {
   $cancel_destination = 'admin/config/services/mailchimp';
   return confirm_form($form,
-    t('Reset MailChimp List Cache'),
+    t('Reset MailChimp Audience Cache'),
     $cancel_destination,
-    t('Confirm clearing of MailChimp list cache.'),
+    t('Confirm clearing of MailChimp audience cache.'),
     'Confirm'
   );
 }
 
 /**
- * Handler for lists cache clear form.
+ * Handler for lists/audiences cache clear form.
  */
 function mailchimp_clear_list_cache_form_submit($form, &$form_state) {
   mailchimp_get_lists(array(), TRUE, TRUE, TRUE);
-  drupal_set_message(t('MailChimp List cache cleared.'));
+  drupal_set_message(t('MailChimp Audience cache cleared.'));
 }
