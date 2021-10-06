@@ -9,6 +9,13 @@
   background-repeat: no-repeat;
   padding-left: 28px;
   padding-right: 3px;
+
+  /* Used for hiding the text */
+  text-indent: <?php print $hide_text ? '-999em' : '0em'; ?>;
+  white-space: <?php print $hide_text ? 'nowrap' : 'normal'; ?>;
+  overflow: hidden;
+  text-align: left;
+  direction: ltr;
 }
 
 <?php print $selector_prefix; ?>span.follow-link-wrapper a {
@@ -87,6 +94,13 @@
   background-image: url(<?php print $icon_path; ?>/icon-spiceworks.png);
 }
 
+<?php print $selector_prefix; ?>a.follow-link-instagram {
+  background-image: url(<?php print $icon_path; ?>/icon-instagram.png);
+}
+
+<?php print $selector_prefix; ?>a.follow-link-pinterest {
+  background-image: url(<?php print $icon_path; ?>/icon-pinterest.png);
+}
 <?php print $selector_prefix; ?>a.follow-link-newsletter {
   background-image: url(<?php print $icon_path; ?>/icon-newsletter.png);
 }

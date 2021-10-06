@@ -14,7 +14,7 @@ function follow_help($path, $arg) {
   switch ($path) {
     case 'user/%/follow':
     case 'admin/config/services/follow':
-      return t('Please copy and paste the url for your public profile or page for each service you would like to display in the block. Links need to match the domain of the service in question. If you want to hide the title of the links, enter "&lt;none&gt;" in the customized name.');
+      return t('Please copy and paste the url for your public profile or page for each service you would like to display in the block. Links need to match the domain of the service in question.');
   }
 }
 
@@ -117,6 +117,7 @@ function follow_theme() {
       'icon_style_name' => NULL,
       'icon_style' => array(),
       'icon_path' => NULL,
+      'hide_text' => FALSE,
       'selector_prefix' => '',
       'css_overrides' => '',
     ),
@@ -200,7 +201,7 @@ function follow_block_info() {
  * Implements hook_block_configure().
  */
 function follow_block_configure($delta = '') {
-  switch($delta) {
+  switch ($delta) {
     case 'site':
       $form['follow_title'] = array(
         '#type' => 'radios',
@@ -245,6 +246,14 @@ function follow_block_configure($delta = '') {
     '#default_value' => variable_get("follow_{$delta}_alignment", 'vertical'),
   );
 
+  // Allow hiding of the text.
+  $form['follow_hide_text'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Hide Text'),
+    '#description' => t('Would you like to hide the text next to the icons?'),
+    '#default_value' => variable_get("follow_{$delta}_hide_text", FALSE),
+  );
+
   // Allow changing which icon style to use on the global service links.
   $form['follow_icon_style'] = array(
     '#type' => 'select',
@@ -265,6 +274,7 @@ function follow_block_save($delta = '', $edit = array()) {
     variable_set('follow_site_block_user', $edit['follow_user']);
   }
   variable_set("follow_{$delta}_alignment", $edit['follow_alignment']);
+  variable_set("follow_{$delta}_hide_text", $edit['follow_hide_text']);
   variable_set("follow_{$delta}_icon_style", $edit['follow_icon_style']);
   // Reset the CSS in case the styles changed.
   follow_save_css(TRUE);
@@ -304,7 +314,7 @@ function follow_block_view($delta = '') {
  *   The uid of the user account.  Defaults to the site form, $uid = 0.
  */
 function _follow_block_subject($uid = 0) {
-  return follow_link_title($uid) .':';
+  return follow_link_title($uid) . ':';
 }
 
 /**
@@ -388,12 +398,8 @@ function theme_follow_link($variables) {
   $classes[] = $link->uid ? 'follow-link-user' : 'follow-link-site';
   $attributes = array(
     'class' => $classes,
-    'title' => follow_link_title($link->uid) .' '. $title,
+    'title' => follow_link_title($link->uid) . ' ' . $title,
   );
-  // Clean up the blank titles.
-  if ($title == '<none>') {
-    $title = '';
-  }
   $link->options['attributes'] = $attributes;
   return l($title, $link->path, $link->options) . "\n";
 }
@@ -503,6 +509,7 @@ function _follow_links_form_link($link, $title, $uid) {
     '#follow_uid' => $uid,
     '#default_value' => isset($link->url) ? $link->url : '',
     '#element_validate' => array('follow_url_validate'),
+    '#maxlength' => 255,
   );
   // Provide the title of the link only if the link URL is there and the user
   // has the appropriate access.
@@ -523,7 +530,7 @@ function follow_links_form_submit($form, &$form_state) {
   $values = $form_state['values'];
   $links = $values['follow_links'];
 
-  foreach($links as $name => $link) {
+  foreach ($links as $name => $link) {
     $link = (object) $link;
     $link->url = trim($link->url);
 

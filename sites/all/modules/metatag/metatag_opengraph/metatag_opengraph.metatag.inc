@@ -66,7 +66,9 @@ function metatag_opengraph_metatag_bundled_config_alter(array &$configs) {
           $config->config += array(
             'og:image' => array('value' => '[user:picture:url]'),
             // For now keep the old default.
+            // @code
             // 'og:image:url' => array('value' => '[user:picture:url]'),
+            // @endcode
           );
         }
         break;
@@ -80,7 +82,12 @@ function metatag_opengraph_metatag_bundled_config_alter(array &$configs) {
 function metatag_opengraph_metatag_info() {
   $info['groups']['open-graph'] = array(
     'label' => t('Open Graph'),
-    'description' => t("The <a href=\"@ogp\">Open Graph meta tags</a> are used control how Facebook, Pinterest, LinkedIn and other social networking sites interpret the site's content.", array('@ogp' => 'http://ogp.me/')),
+    'description' => t('The <a href="@ogp">Open Graph meta tags</a> are used control how Facebook, Pinterest, LinkedIn and other social networking sites interpret the content of the site.<br /><br />The Facebook <a href="@debugger">Sharing Debugger</a> lets you preview how your content will look when shared to Facebook and debug any issues with your Open Graph tags.',
+      array(
+        '@ogp' => 'http://ogp.me/',
+        '@debugger' => 'https://developers.facebook.com/tools/debug/',
+      )
+    ),
     'form' => array(
       '#weight' => 50,
     ),
@@ -207,6 +214,12 @@ function metatag_opengraph_metatag_info() {
     'devel_generate' => array(
       'type' => 'image',
     ),
+  ) + $og_defaults;
+  $info['tags']['og:image:alt'] = array(
+    'label' => t('Image alternative text'),
+    'description' => t('A description of what is in the image (not a caption). If og:image is provided this value should also be provided.'),
+    'multiple' => TRUE,
+    'weight' => ++$weight,
   ) + $og_defaults;
   $info['tags']['og:image:type'] = array(
     'label' => t('Image type'),
@@ -461,6 +474,7 @@ function metatag_opengraph_metatag_info() {
 
   // For the "video" og:type.
   $video_defaults = array();
+  // @code
   //   'dependencies' => array(
   //     array(
   //       'dependency' => 'og:type',
@@ -469,10 +483,10 @@ function metatag_opengraph_metatag_info() {
   //       'value' => 'profile',
   //     ),
   //   ),
-  // );
+  // @endcode
   $info['tags']['og:video:url'] = array(
     'label' => t('Video URL'),
-    'description' => t('The URL to a video file that complements this object.'),
+    'description' => t('The URL of an video which should represent the content. For best results use a source that is at least 1200 x 630 pixels in size, but at least 600 x 316 pixels is a recommended minimum. Object types supported include video.episode, video.movie, video.other, and video.tv_show.'),
     'weight' => ++$weight,
     'replaces' => array(
       'og:video',
@@ -508,7 +522,7 @@ function metatag_opengraph_metatag_info() {
   ) + $og_defaults;
   $info['tags']['og:video:type'] = array(
     'label' => t('Video type'),
-    'description' => t('The MIME type of the video file. Examples include "application/x-shockwave-flash" for a Flash video, or "text/html" if this is a standalone web page containing a video.'),
+    'description' => t('The type of video referenced above. Should be either  video.episode, video.movie, video.other, and video.tv_show. Note: there should be one value for each video, and having more than there are videos may cause problems.'),
     'weight' => ++$weight,
   ) + $og_defaults;
   $info['tags']['video:actor'] = array(
@@ -567,6 +581,12 @@ function metatag_opengraph_metatag_info() {
   return $info;
 }
 
+/**
+ * Provide a list of Open Graph "type" values, grouped by topic.
+ *
+ * @return array
+ *   A list of OG "type" values.
+ */
 function _metatag_opengraph_type_options() {
   $options = array(
     t('Activities') => array(
