@@ -2616,6 +2616,7 @@ textarea {
 	.staff {
 		max-width: 370px;
 		margin-right: 0;
+		height: auto;
 	}
 
 	.staff:nth-child(3n) {
