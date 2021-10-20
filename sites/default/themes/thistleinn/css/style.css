@@ -2624,6 +2624,7 @@ textarea {
 
 	.staff:nth-child(2n) {
 		margin-right: 0;
+		height: auto;
 	}
 	
 }
