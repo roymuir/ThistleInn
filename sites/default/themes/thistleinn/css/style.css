@@ -2620,6 +2620,7 @@ textarea {
 
 	.staff:nth-child(3n) {
 		margin-right: 0;
+		height: auto;
 	}
 
 	.staff:nth-child(2n) {
