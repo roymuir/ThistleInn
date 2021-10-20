@@ -2283,6 +2283,36 @@ textarea {
 	height: 60px;
 }
 
+
+/* ------------------------- STAFF MEMBERS ------------------------- */
+
+.staff {
+	float: left;
+	width: 100%;
+	max-width: 255px;
+	margin-right: 30px;
+	margin-bottom: 30px;	    
+}
+
+.staff:nth-child(3n) {
+	margin-right: 0;
+}
+
+.staff img {
+	margin-bottom: 20px;
+	padding: 8px;
+    background: #f0e8d9;
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+}
+
+.staff p {
+	margin-bottom:  0;
+}
+
+
+
 /* ------------------------- MEDIA QUERIES ------------------------- */
 
 @media only screen  and (max-width: 1220px) {
@@ -2344,6 +2374,18 @@ textarea {
 
 	#block-views-portfolio-block-1 .views-field-title {
 		margin-top: 23px;
+	}
+
+	.staff {
+		max-width: 330px;    
+	}
+
+	.staff:nth-child(3n) {
+		margin-right: 30px;
+	}
+
+	.staff:nth-child(2n) {
+		margin-right: 0;
 	}
 	
 }
@@ -2569,6 +2611,19 @@ textarea {
 		display: inline-block;
     	margin: 0 auto;
     	width: 80px;
+	}
+
+	.staff {
+		max-width: 370px;
+		margin-right: 0;    
+	}
+
+	.staff:nth-child(3n) {
+		margin-right: 0;
+	}
+
+	.staff:nth-child(2n) {
+		margin-right: 0;
 	}
 	
 }
