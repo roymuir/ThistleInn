@@ -2298,6 +2298,10 @@ textarea {
 	margin-right: 0;
 }
 
+.staff:nth-child(4n) {
+	clear: both;
+}
+
 .staff img {
 	margin-bottom: 20px;
 	padding: 8px;
@@ -2377,7 +2381,7 @@ textarea {
 	}
 
 	.staff {
-		max-width: 330px;    
+		max-width: 312px;    
 	}
 
 	.staff:nth-child(3n) {
@@ -2489,6 +2493,9 @@ textarea {
     	background: url(../images/download.png) no-repeat 338px 8px;
 	}
 	
+	.staff:nth-child(3n) {
+		clear: left;
+	}
 }
 
 
