@@ -2497,10 +2497,6 @@ textarea {
 		padding-right: 35px;
     	background: url(../images/download.png) no-repeat 338px 8px;
 	}
-	
-	.staff:nth-child(3n) {
-		clear: left;
-	}
 
 	.staff:nth-child(4n) {
 		clear: none;
