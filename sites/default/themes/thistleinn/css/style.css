@@ -2496,6 +2496,10 @@ textarea {
 	.staff:nth-child(3n) {
 		clear: left;
 	}
+
+	.staff:nth-child(4n) {
+		clear: none;
+	}
 }
 
 
