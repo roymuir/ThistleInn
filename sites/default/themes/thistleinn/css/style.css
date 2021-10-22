@@ -2385,11 +2385,11 @@ textarea {
 	}
 
 	.staff:nth-child(2n) {
-		margin-right: 0;
+		margin-right: 30px;
 	}
 
 	.staff:nth-child(3n) {
-		margin-right: 30px;
+		margin-right: 0;
 	}
 
 	.staff:nth-child(4n) {
