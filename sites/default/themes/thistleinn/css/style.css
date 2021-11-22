@@ -2286,6 +2286,10 @@ textarea {
 
 /* ------------------------- STAFF MEMBERS ------------------------- */
 
+.block-views-staff-block {
+	margin-bottom: 0;
+}
+
 .view-staff .view-content {
 	display: flex;
 	flex-wrap: wrap;
