@@ -2286,20 +2286,16 @@ textarea {
 
 /* ------------------------- STAFF MEMBERS ------------------------- */
 
+.view-staff .view-content {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 30px;
+}
+
 .staff {
-	float: left;
-	width: 100%;
+	flex: 1 0 23%;
 	max-width: 255px;
-	margin-right: 30px;
 	margin-bottom: 30px;	    
-}
-
-.staff:nth-child(3n) {
-	margin-right: 0;
-}
-
-.staff:nth-child(4n) {
-	clear: both;
 }
 
 .staff img {
@@ -2381,20 +2377,7 @@ textarea {
 	}
 
 	.staff {
-		max-width: 312px;    
-	}
-
-	.staff:nth-child(2n) {
-		margin-right: 0;
-	}
-
-	.staff:nth-child(2n+1) {
-		margin-right: 30px;
-		clear: both;
-	}
-
-	.staff:nth-child(4n) {
-		clear: none;
+		max-width: 210px;	    
 	}
 	
 }
@@ -2496,10 +2479,6 @@ textarea {
 	.view-whats-on-pdf-download .button a {
 		padding-right: 35px;
     	background: url(../images/download.png) no-repeat 338px 8px;
-	}
-
-	.staff:nth-child(4n) {
-		clear: none;
 	}
 }
 
@@ -2626,16 +2605,9 @@ textarea {
 	}
 
 	.staff {
-		max-width: 370px;
-		margin-right: 0;
-	}
-
-	.staff:nth-child(3n) {
-		margin-right: 0;
-	}
-
-	.staff:nth-child(2n) {
-		margin-right: 0;
+		flex: none;
+		max-width: none;
+		width: 100%;
 	}
 	
 }
