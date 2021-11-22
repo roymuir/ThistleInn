@@ -2286,7 +2286,7 @@ textarea {
 
 /* ------------------------- STAFF MEMBERS ------------------------- */
 
-@content #block-views-staff-block {
+#content #block-views-staff-block {
 	margin-bottom: 0;
 }
 
