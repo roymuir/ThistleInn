@@ -2,7 +2,8 @@
 /* ------------------------- DRUPAL 7 FRAMEWORK ------------------------- */
 
 body {
-	color: #3f3d4e;
+/*	color: #3f3d4e;*/
+	color: red;
 	font-size: 12px;
 	line-height: 20px;
 	font-family: 'Libre Baskerville', serif;
