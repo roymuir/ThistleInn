@@ -5,9 +5,8 @@ package = Example modules
 dependencies[] = checklistapi
 configure = admin/config/development/checklistapi-example
 
-; Information added by Drupal.org packaging script on 2014-08-25
-version = "7.x-1.2"
+; Information added by Drupal.org packaging script on 2023-04-07
+version = "7.x-1.4"
 core = "7.x"
 project = "checklistapi"
-datestamp = "1409004834"
-
+datestamp = "1680882715"

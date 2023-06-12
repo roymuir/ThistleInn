@@ -365,7 +365,9 @@ function metatag_modify_metatags_action_form(array $context) {
     '#type' => 'checkbox',
     '#title' => t('Reset to metatag defaults'),
     '#default_value' => FALSE,
-    '#description' => t('Check to <strong>fully reset all metatags</strong> on the entities being modified to their <a href="@settings">default configuration</a>.', array('@settings' => url('admin/config/search/metatags'))),
+    '#description' => t('Check to <strong>fully reset all metatags</strong> on the entities being modified to their <a href="@settings">default configuration</a>.', array(
+      '@settings' => url('admin/config/search/metatags'),
+    )),
   );
 
   return $form;
@@ -380,7 +382,7 @@ function metatag_modify_metatags_action_form(array $context) {
  * @return array
  *   The updated metatag values that is ultimately keyed at $context['updates'].
  */
-function metatag_modify_metatags_action_submit($form, &$form_state) {
+function metatag_modify_metatags_action_submit(array $form, array &$form_state) {
   $updates = $form_state['values']['metatags'][LANGUAGE_NONE];
   $defaults = metatag_config_load_with_defaults($form['#entity_type']);
 
@@ -519,7 +521,7 @@ function metatag_config_get_replacements() {
 /**
  * Save a metatag configuration record to the database.
  */
-function metatag_config_save($config) {
+function metatag_config_save(\stdClass $config) {
   $config->is_new = empty($config->cid);
 
   // Allow modules to alter the configuration before it is saved using
@@ -550,7 +552,7 @@ function metatag_config_save($config) {
 /**
  * Delete a metatag configuration record.
  */
-function metatag_config_delete($config) {
+function metatag_config_delete(\stdClass $config) {
   db_delete('metatag_config')
     ->condition('instance', $config->instance)
     ->execute();
@@ -712,7 +714,7 @@ function metatag_metatags_load_multiple($entity_type, array $entity_ids, array $
  *   The entity's primary ID.
  * @param int $revision_id
  *   The entity's revision ID.
- * @param array $metatags
+ * @param mixed $metatags
  *   All of the tag information, keyed by the language code. Most meta tags use
  *   the 'value' element, so the structure should look like:
  *   @code
@@ -1621,7 +1623,7 @@ function metatag_metatags_form(array &$form, $instance, array $metatags = array(
         $form['metatags'][$langcode][$group_key] = $group['form'] + array(
           '#type' => 'fieldset',
           '#title' => $group['label'],
-          '#description' => !empty($group['description']) ? $group['description'] : '',
+          '#description' => $group['description'],
           '#collapsible' => TRUE,
           '#collapsed' => TRUE,
         );
@@ -1743,14 +1745,19 @@ function metatag_commerce_product_form_submit($form, &$form_state) {
   // The entity being saved.
   $entity_type = 'commerce_product';
   $product = $form_state[$entity_type];
-  $entity_id = $product->product_id;
-  $revision_id = $product->revision_id;
+  if (is_object($product)) {
+    $entity_id = $product->product_id;
+    $revision_id = $product->revision_id;
 
-  // Get the full entity details.
-  list(, , $bundle) = entity_extract_ids($entity_type, $product);
+    // Get the full entity details.
+    list(, , $bundle) = entity_extract_ids($entity_type, $product);
 
-  // Update the meta tags for this entity type.
-  metatag_metatags_save($entity_type, $entity_id, $revision_id, $form_state['values']['metatags'], $bundle);
+    // Update the meta tags for this entity type.
+    metatag_metatags_save($entity_type, $entity_id, $revision_id, $form_state['values']['metatags'], $bundle);
+  }
+  else {
+    drupal_set_message(t('Product record could not be found.'), 'warning');
+  }
 }
 
 /**
@@ -1923,7 +1930,7 @@ function metatag_entity_type_disable($entity_type, $bundle = NULL) {
  *
  * @param string $instance
  *   The configuration instance key of the meta tags, e.g. "node:article".
- * @param array $metatags
+ * @param mixed $metatags
  *   An array of meta tags from metatag_metatags_view().
  */
 function metatag_page_set_metatags($instance, array $metatags) {
@@ -2170,7 +2177,10 @@ function metatag_field_attach_form($entity_type, $entity, &$form, &$form_state, 
 function metatag_form_alter(&$form, $form_state, $form_id) {
   if (!empty($form['#metatags']) && !isset($form['metatags'])) {
     extract($form['#metatags']);
+    $metatags = isset($metatags) ? $metatags : array();
+    $options = isset($options) ? $options : array();
     metatag_metatags_form($form, $instance, $metatags, $options);
+
     unset($form['#metatags']);
   }
 }
@@ -2217,6 +2227,37 @@ function metatag_get_info($type = NULL, $name = NULL) {
       // Let other modules alter the entity info using
       // hook_metatag_info_alter().
       drupal_alter('metatag_info', $info);
+
+      // Verify that the expected meta tag pieces are present, if one is
+      // missing then set it to the default value listed here.
+      $required_values = array(
+        'label' => 'Unknown meta tag',
+        'description' => '',
+        'class' => 'DrupalTextMetaTag',
+        'weight' => 0,
+        'group' => 'basic',
+      );
+      foreach ($info['tags'] as $tag_name => &$tag) {
+        foreach ($required_values as $required => $default_value) {
+          if (!isset($tag[$required])) {
+            $tag[$required] = $default_value;
+          }
+        }
+      }
+
+      // Verify that the expected tag group pieces are present, if one is
+      // missing then set it to a blank string.
+      $required_values = array(
+        'label',
+        'description',
+      );
+      foreach ($info['groups'] as $group_name => &$group) {
+        foreach ($required_values as $required) {
+          if (!isset($group[$required])) {
+            $group[$required] = '';
+          }
+        }
+      }
 
       metatag_cache_set($cid, $info);
     }
@@ -2520,7 +2561,7 @@ function metatag_config_instance_label($instance) {
 /**
  * Title callback for meta tag configuration instances.
  */
-function metatag_config_title($config) {
+function metatag_config_title(\stdClass $config) {
   return metatag_config_instance_label($config->instance);
 }
 
@@ -2727,9 +2768,20 @@ function metatag_ctools_render_alter(&$info, $page, $context) {
           // Verify this is an appropriate entity.
           $entity_info = entity_get_info($entity_type);
           if (!empty($entity_info) && _metatag_entity_is_page($entity_type, $entity)) {
-            // Load the meta tags for this entity.
             global $language;
-            metatag_entity_view($entity, $entity_type, 'full', $language->language, TRUE);
+            $langcode = $language->language;
+
+            // If entity_translation_hierarchy is being used then use the
+            // relevant fallback language for generating metatags if there is
+            // one. This means that it'll match the language of the content
+            // that's being displayed rather than falling back to the default
+            // language.
+            if (module_exists('entity_translation_hierarchy')) {
+              $langcode = entity_translation_hierarchy_get_candidate($entity, $entity_type, $langcode);
+            }
+
+            // Load the meta tags for this entity.
+            metatag_entity_view($entity, $entity_type, 'full', $langcode, TRUE);
 
             // Don't bother looping over any more contexts, an entity has been
             // found.
@@ -3172,7 +3224,7 @@ function metatag_translate_metatag($string, $tag_name, $context, $langcode = NUL
 /**
  * Translate a set of metatags to the current language.
  *
- * @param array $metatags
+ * @param mixed $metatags
  *   List of meta tags to be translated.
  * @param string $context
  *   An optional context to use with i18n.
@@ -3196,7 +3248,7 @@ function metatag_translate_metatags(array &$metatags, $context = NULL, $langcode
 /**
  * Update the translated definitions of meta tags.
  *
- * @param array $metatags
+ * @param mixed $metatags
  *   List of meta tags to have their translations updated.
  * @param string $context
  *   The string that will be used to group strings in the translation UI.
@@ -3237,7 +3289,7 @@ function metatag_translations_update(array $metatags, $context) {
 /**
  * Remove the translated definitions of meta tags.
  *
- * @param array $metatags
+ * @param mixed $metatags
  *   List of meta tags to have their translations updated.
  * @param string $context
  *   The string that will be used to group strings in the translation UI.
@@ -3278,7 +3330,7 @@ function metatag_translations_delete(array $metatags, $context) {
 /**
  * Implements hook_config_insert().
  */
-function i18n_string_metatag_config_insert($config) {
+function i18n_string_metatag_config_insert(\stdClass $config) {
   // Implements hook_metatag_config_insert() on behalf of i18n_string.
   $context = 'metatag_config:' . $config->instance;
   metatag_translations_update($config->config, $context);
@@ -3287,7 +3339,7 @@ function i18n_string_metatag_config_insert($config) {
 /**
  * Implements hook_config_update().
  */
-function i18n_string_metatag_config_update($config) {
+function i18n_string_metatag_config_update(\stdClass $config) {
   // Implements hook_metatag_config_update() on behalf of i18n_string.
   // Defer to the 'insert' function.
   i18n_string_metatag_config_insert($config);
@@ -3296,7 +3348,7 @@ function i18n_string_metatag_config_update($config) {
 /**
  * Implements hook_config_delete().
  */
-function i18n_string_metatag_config_delete($config) {
+function i18n_string_metatag_config_delete(\stdClass $config) {
   // Implements hook_metatag_config_delete() on behalf of i18n_string.
   $context = 'metatag_config:' . $config->instance;
   metatag_translations_delete($config->config, $context);
@@ -3307,4 +3359,53 @@ function i18n_string_metatag_config_delete($config) {
  */
 function metatag_views_api() {
   return array('api' => 3);
+}
+
+/**
+ * Implements hook_entity_diff_options().
+ */
+function metatag_entity_diff_options($entity_type) {
+  if (metatag_entity_supports_metatags($entity_type)) {
+    $options = array(
+      'metatag' => t('Meta tags'),
+    );
+    return $options;
+  }
+}
+
+/**
+ * Implements hook_entity_diff
+ */
+function metatag_entity_diff($old_entity, $new_entity, $context) {
+  $result = array();
+  $entity_type = $context['entity_type'];
+  $options = variable_get('diff_additional_options_' . $entity_type, array());
+  if (!empty($options['metatag']) && metatag_entity_supports_metatags($entity_type)) {
+    // Find metatags that are set on either the new or old entity.
+    $tags = array();
+    foreach (array('old' => $old_entity, 'new' => $new_entity) as $entity_key => $entity) {
+      $language = metatag_entity_get_language($entity_type, $entity);
+      if (isset($entity->metatags[$language])) {
+        foreach ($entity->metatags[$language] as $key => $value) {
+          $tags[$key][$entity_key] = $value['value'];
+        }
+      }
+    }
+
+    $init_weight = 100;
+    foreach ($tags as $key => $values) {
+      $id = ucwords('Meta ' . $key);
+      // @todo find the default values and show these if not set.
+      $result[$id] = array(
+        '#name' => $id,
+        '#old' => array(empty($values['old']) ? '' : $values['old']),
+        '#new' => array(empty($values['new']) ? '' : $values['new']),
+        '#weight' => $init_weight++,
+        '#settings' => array(
+          'show_header' => TRUE,
+        ),
+      );
+    }
+  }
+  return $result;
 }

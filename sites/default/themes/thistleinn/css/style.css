@@ -2,8 +2,7 @@
 /* ------------------------- DRUPAL 7 FRAMEWORK ------------------------- */
 
 body {
-/*	color: #3f3d4e;*/
-	color: red;
+	color: #3f3d4e;
 	font-size: 12px;
 	line-height: 20px;
 	font-family: 'Libre Baskerville', serif;
@@ -2314,6 +2313,54 @@ textarea {
 
 .staff p {
 	margin-bottom:  0;
+}
+
+
+/* ------------------------- MENUS ------------------------- */
+
+.view-menus .view-content {
+		overflow: visible;
+}
+
+.view-menus .category {
+    margin-bottom: 32px;
+    border-top: 2px solid #b4873d;
+    display: flex;
+    flex-direction: column;
+}
+
+.view-menus .category:first-child {
+		margin-top: 24px;
+}
+
+.view-menus .category h3 {
+    font-style: normal;
+    text-transform: uppercase;
+    margin-top: -11px;
+    background: white;
+    align-self: baseline;
+    padding: 0 28px 0 0;
+}
+
+.view-menus .category .menu-item {
+	    display: flex;
+    	gap: 16px;
+    	margin-bottom: 16px;
+}
+
+.view-menus .category .menu-item .views-field-field-extras {
+		color: #b4873d;
+}
+
+.view-menus .view-footer {
+		border-top: 1px solid #b4873d;
+    border-bottom: 1px solid #b4873d;
+    padding: 10px 0;
+}
+
+.view-menus .view-footer p {
+		font-size: 10px;
+		margin-bottom: 4px;
 }
 
 

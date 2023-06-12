@@ -22,11 +22,12 @@
  *   the specified checklist, or FALSE if not.
  */
 function checklistapi_checklist_access($id, $operation = 'any') {
-  $all_operations = array('view', 'edit', 'any');
+  $all_operations = ['view', 'edit', 'any'];
   if (!in_array($operation, $all_operations)) {
-    throw new Exception(t('No such operation "@operation"', array(
+    $message = t('No such operation "@operation"', [
       '@operation' => $operation,
-    )));
+    ]);
+    throw new Exception($message);
   }
 
   $access['view'] = user_access('view any checklistapi checklist') || user_access('view ' . $id . ' checklistapi checklist');
@@ -70,7 +71,7 @@ function checklistapi_get_checklist_info($id = NULL) {
     $definitions = checklistapi_sort_array($definitions);
     // Inject checklist IDs.
     foreach ($definitions as $key => $value) {
-      $definitions[$key] = array('#id' => $key) + $definitions[$key];
+      $definitions[$key] = ['#id' => $key] + $definitions[$key];
     }
   }
   if (!empty($id)) {
@@ -105,16 +106,16 @@ function checklistapi_init() {
  * Implements hook_menu().
  */
 function checklistapi_menu() {
-  $items = array();
+  $items = [];
 
   // Checklists report.
-  $items['admin/reports/checklistapi'] = array(
+  $items['admin/reports/checklistapi'] = [
     'title' => 'Checklists',
     'page callback' => 'checklistapi_report_form',
-    'access arguments' => array('view checklistapi checklists report'),
+    'access arguments' => ['view checklistapi checklists report'],
     'description' => 'Get an overview of your installed checklists with progress details.',
     'file' => 'checklistapi.admin.inc',
-  );
+  ];
 
   // Individual checklists.
   foreach (checklistapi_get_checklist_info() as $id => $definition) {
@@ -123,39 +124,39 @@ function checklistapi_menu() {
     }
 
     // View/edit checklist.
-    $items[$definition['#path']] = array(
+    $items[$definition['#path']] = [
       'title' => $definition['#title'],
       'description' => (!empty($definition['#description'])) ? $definition['#description'] : '',
       'page callback' => 'drupal_get_form',
-      'page arguments' => array('checklistapi_checklist_form', $id),
+      'page arguments' => ['checklistapi_checklist_form', $id],
       'access callback' => 'checklistapi_checklist_access',
-      'access arguments' => array($id),
+      'access arguments' => [$id],
       'file' => 'checklistapi.pages.inc',
-    );
+    ];
     if (!empty($definition['#menu_name'])) {
       $items[$definition['#path']]['menu_name'] = $definition['#menu_name'];
     }
 
     // Clear saved progress.
-    $items[$definition['#path'] . '/clear'] = array(
+    $items[$definition['#path'] . '/clear'] = [
       'title' => 'Clear',
       'page callback' => 'drupal_get_form',
-      'page arguments' => array('checklistapi_checklist_clear_confirm', $id),
+      'page arguments' => ['checklistapi_checklist_clear_confirm', $id],
       'access callback' => 'checklistapi_checklist_access',
-      'access arguments' => array($id, 'edit'),
+      'access arguments' => [$id, 'edit'],
       'file' => 'checklistapi.pages.inc',
       'type' => MENU_CALLBACK,
-    );
+    ];
 
     // Toggle compact mode.
-    $items[$definition['#path'] . '/compact'] = array(
+    $items[$definition['#path'] . '/compact'] = [
       'title' => 'Compact mode',
       'page callback' => 'checklistapi_compact_page',
       'access callback' => 'checklistapi_checklist_access',
-      'access arguments' => array($id),
+      'access arguments' => [$id],
       'file' => 'checklistapi.pages.inc',
       'type' => MENU_CALLBACK,
-    );
+    ];
   }
 
   return $items;
@@ -165,43 +166,43 @@ function checklistapi_menu() {
  * Implements hook_permission().
  */
 function checklistapi_permission() {
-  $perms = array();
+  $perms = [];
 
   // Universal permissions.
-  $perms['view checklistapi checklists report'] = array(
+  $perms['view checklistapi checklists report'] = [
     'title' => t(
       'View the !name report',
-      array('!name' => (user_access('view checklistapi checklists report')) ? l(t('Checklists'), 'admin/reports/checklistapi') : drupal_placeholder('Checklists'))
+      ['!name' => (user_access('view checklistapi checklists report')) ? l(t('Checklists'), 'admin/reports/checklistapi') : drupal_placeholder('Checklists')]
     ),
-  );
-  $perms['view any checklistapi checklist'] = array(
+  ];
+  $perms['view any checklistapi checklist'] = [
     'title' => t('View any checklist'),
     'description' => $view_checklist_perm_description = t('Read-only access: View list items and saved progress.'),
-  );
-  $perms['edit any checklistapi checklist'] = array(
+  ];
+  $perms['edit any checklistapi checklist'] = [
     'title' => t('Edit any checklist'),
     'description' => $edit_checklist_perm_description = t('Check and uncheck list items and save changes, or clear saved progress.'),
-  );
+  ];
 
   // Per checklist permissions.
   foreach (checklistapi_get_checklist_info() as $id => $definition) {
     if (empty($id)) {
       continue;
     }
-    $perms['view ' . $id . ' checklistapi checklist'] = array(
+    $perms['view ' . $id . ' checklistapi checklist'] = [
       'title' => t(
         'View the !name checklist',
-        array('!name' => (checklistapi_checklist_access($id)) ? l($definition['#title'], $definition['#path']) : drupal_placeholder($definition['#title']))
+        ['!name' => (checklistapi_checklist_access($id)) ? l($definition['#title'], $definition['#path']) : drupal_placeholder($definition['#title'])]
       ),
       'description' => $view_checklist_perm_description,
-    );
-    $perms['edit ' . $id . ' checklistapi checklist'] = array(
+    ];
+    $perms['edit ' . $id . ' checklistapi checklist'] = [
       'title' => t(
         'Edit the !name checklist',
-        array('!name' => (checklistapi_checklist_access($id)) ? l($definition['#title'], $definition['#path']) : drupal_placeholder($definition['#title']))
+        ['!name' => (checklistapi_checklist_access($id)) ? l($definition['#title'], $definition['#path']) : drupal_placeholder($definition['#title'])]
       ),
       'description' => $edit_checklist_perm_description,
-    );
+    ];
   }
 
   return $perms;
@@ -228,7 +229,7 @@ function checklistapi_sort_array(array $array) {
   }
 
   $incrementer = 0;
-  $children = array();
+  $children = [];
   foreach ($child_keys as $key) {
     // Move child to a temporary array for sorting.
     $children[$key] = $array[$key];
@@ -279,19 +280,19 @@ function checklistapi_strtolowercamel($string) {
  * Implements hook_theme().
  */
 function checklistapi_theme() {
-  return array(
-    'checklistapi_compact_link' => array(
+  return [
+    'checklistapi_compact_link' => [
       'file' => 'checklistapi.pages.inc',
-    ),
-    'checklistapi_progress_bar' => array(
+    ],
+    'checklistapi_progress_bar' => [
       'path' => drupal_get_path('module', 'checklistapi') . '/templates',
       'template' => 'checklistapi-progress-bar',
-      'variables' => array(
+      'variables' => [
         'message' => '&nbsp;',
         'number_complete' => 0,
         'number_of_items' => 0,
         'percent_complete' => 0,
-      ),
-    ),
-  );
+      ],
+    ],
+  ];
 }

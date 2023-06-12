@@ -15,6 +15,7 @@
  *
  * Any number of checklists can be defined in an implementation of this hook.
  * Checklist API will register menu items and create permissions for each one.
+ * For a working example, see checklistapi_example.module.
  *
  * @return array
  *   An array of checklist definitions. Each definition is keyed by an arbitrary
@@ -66,33 +67,31 @@
  *           of items before being output. Lower numbers appear before higher
  *           numbers.
  *
- * For a working example, see checklistapi_example.module.
- *
  * @see checklistapi_example_checklistapi_checklist_info()
  * @see hook_checklistapi_checklist_info_alter()
  */
 function hook_checklistapi_checklist_info() {
-  $definitions = array();
-  $definitions['example_checklist'] = array(
+  $definitions = [];
+  $definitions['example_checklist'] = [
     '#title' => t('Example checklist'),
     '#path' => 'example-checklist',
     '#description' => t('An example checklist.'),
     '#help' => t('<p>This is an example checklist.</p>'),
-    'example_group' => array(
+    'example_group' => [
       '#title' => t('Example group'),
       '#description' => t('<p>Here are some example items.</p>'),
-      'example_item_1' => array(
+      'example_item_1' => [
         '#title' => t('Example item 1'),
-        'example_link' => array(
+        'example_link' => [
           '#text' => t('Example.com'),
           '#path' => 'http://www.example.com/',
-        ),
-      ),
-      'example_item_2' => array(
+        ],
+      ],
+      'example_item_2' => [
         '#title' => t('Example item 2'),
-      ),
-    ),
-  );
+      ],
+    ],
+  ];
   return $definitions;
 }
 
@@ -102,25 +101,24 @@ function hook_checklistapi_checklist_info() {
  * This hook is invoked by checklistapi_get_checklist_info(). The checklist
  * definitions are passed in by reference. Additional checklists may be added,
  * or existing checklists may be altered or removed.
+ * For a working example, see checklistapi_example.module.
  *
  * @param array $definitions
  *   The multidimensional array of checklist definitions returned by
  *   hook_checklistapi_checklist_info().
- *
- * For a working example, see checklistapi_example.module.
  *
  * @see checklistapi_get_checklist_info()
  * @see hook_checklistapi_checklist_info()
  */
 function hook_checklistapi_checklist_info_alter(array &$definitions) {
   // Add an item.
-  $definitions['example_checklist']['example_group']['new_item'] = array(
+  $definitions['example_checklist']['example_group']['new_item'] = [
     'title' => t('New item'),
-  );
+  ];
   // Add a group.
-  $definitions['example_checklist']['new_group'] = array(
+  $definitions['example_checklist']['new_group'] = [
     '#title' => t('New group'),
-  );
+  ];
   // Move an item.
   $definitions['example_checklist']['new_group']['example_item_1'] = $definitions['example_checklist']['example_group']['example_item_1'];
   unset($definitions['example_checklist']['example_group']['example_item_1']);

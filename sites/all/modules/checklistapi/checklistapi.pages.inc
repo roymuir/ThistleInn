@@ -18,9 +18,9 @@
 function checklistapi_checklist_clear_confirm($form, &$form_state, $id) {
   $checklist = checklistapi_checklist_load($id);
   $form['#checklist'] = $checklist;
-  $question = t('Are you sure you want to clear %title saved progress?', array(
+  $question = t('Are you sure you want to clear %title saved progress?', [
     '%title' => $checklist->title,
-  ));
+  ]);
   $description = t('All progress details will be erased. This action cannot be undone.');
   $yes = t('Clear');
   $no = t('Cancel');
@@ -54,43 +54,43 @@ function checklistapi_checklist_clear_confirm_submit($form, &$form_state) {
 function checklistapi_checklist_form($form, &$form_state, $id) {
   $form['#checklist'] = $checklist = checklistapi_checklist_load($id);
 
-  $form['progress_bar'] = array(
+  $form['progress_bar'] = [
     '#type' => 'markup',
-    '#markup' => theme('checklistapi_progress_bar', array(
-      'message' => ($checklist->hasSavedProgress()) ? t('Last updated @date by !user', array(
+    '#markup' => theme('checklistapi_progress_bar', [
+      'message' => ($checklist->hasSavedProgress()) ? t('Last updated @date by !user', [
         '@date' => $checklist->getLastUpdatedDate(),
         '!user' => $checklist->getLastUpdatedUser(),
-      )) : '&nbsp;',
+      ]) : '&nbsp;',
       'number_complete' => $checklist->getNumberCompleted(),
       'number_of_items' => $checklist->getNumberOfItems(),
       'percent_complete' => round($checklist->getPercentComplete()),
-    )),
-  );
+    ]),
+  ];
   if (checklistapi_compact_mode()) {
-    $form['#attributes']['class'] = array('compact-mode');
+    $form['#attributes']['class'] = ['compact-mode'];
   }
-  $form['compact_mode_link'] = array(
+  $form['compact_mode_link'] = [
     '#markup' => theme('checklistapi_compact_link'),
-  );
+  ];
 
-  $form['checklistapi'] = array(
-    '#attached' => array(
-      'css' => array(drupal_get_path('module', 'checklistapi') . '/checklistapi.css'),
-      'js' => array(drupal_get_path('module', 'checklistapi') . '/checklistapi.js'),
-    ),
+  $form['checklistapi'] = [
+    '#attached' => [
+      'css' => [drupal_get_path('module', 'checklistapi') . '/checklistapi.css'],
+      'js' => [drupal_get_path('module', 'checklistapi') . '/checklistapi.js'],
+    ],
     '#tree' => TRUE,
     '#type' => 'vertical_tabs',
-  );
+  ];
 
   // Loop through groups.
   $num_autochecked_items = 0;
   $groups = $checklist->items;
   foreach (element_children($groups) as $group_key) {
     $group = &$groups[$group_key];
-    $form['checklistapi'][$group_key] = array(
+    $form['checklistapi'][$group_key] = [
       '#title' => filter_xss($group['#title']),
       '#type' => 'fieldset',
-    );
+    ];
     if (!empty($group['#description'])) {
       $form['checklistapi'][$group_key]['#description'] = filter_xss_admin($group['#description']);
     }
@@ -106,10 +106,10 @@ function checklistapi_checklist_form($form, &$form_state, $id) {
         $user = user_load($saved_item['#uid']);
         $title .= t(
           '<span class="completion-details"> - Completed @time by !user</a>',
-          array(
+          [
             '@time' => format_date($saved_item['#completed'], 'short'),
-            '!user' => theme('username', array('account' => $user)),
-          )
+            '!user' => theme('username', ['account' => $user]),
+          ]
         );
       }
       // Set default value.
@@ -125,53 +125,53 @@ function checklistapi_checklist_form($form, &$form_state, $id) {
       // Get description.
       $description = (isset($item['#description'])) ? '<p>' . filter_xss_admin($item['#description']) . '</p>' : '';
       // Append links.
-      $links = array();
+      $links = [];
       foreach (element_children($item) as $link_key) {
         $link = &$item[$link_key];
-        $options = (!empty($link['#options']) && is_array($link['#options'])) ? $link['#options'] : array();
+        $options = (!empty($link['#options']) && is_array($link['#options'])) ? $link['#options'] : [];
         $links[] = l($link['#text'], $link['#path'], $options);
       }
       if (count($links)) {
         $description .= '<div class="links">' . implode(' | ', $links) . '</div>';
       }
       // Compile the list item.
-      $form['checklistapi'][$group_key][$item_key] = array(
-        '#attributes' => array('class' => array('checklistapi-item')),
+      $form['checklistapi'][$group_key][$item_key] = [
+        '#attributes' => ['class' => ['checklistapi-item']],
         '#default_value' => $default_value,
         '#description' => filter_xss_admin($description),
         '#disabled' => !($user_has_edit_access = $checklist->userHasAccess('edit')),
         '#title' => filter_xss_admin($title),
         '#type' => 'checkbox',
-      );
+      ];
     }
   }
 
-  $form['actions'] = array(
+  $form['actions'] = [
     '#access' => $user_has_edit_access,
     '#type' => 'actions',
     '#weight' => 100,
-    'save' => array(
-      '#submit' => array('checklistapi_checklist_form_submit'),
+    'save' => [
+      '#submit' => ['checklistapi_checklist_form_submit'],
       '#type' => 'submit',
       '#value' => t('Save'),
-    ),
-    'clear' => array(
+    ],
+    'clear' => [
       '#access' => $checklist->hasSavedProgress(),
-      '#attributes' => array('class' => array('clear-saved-progress')),
+      '#attributes' => ['class' => ['clear-saved-progress']],
       '#href' => $checklist->path . '/clear',
       '#title' => t('Clear saved progress'),
       '#type' => 'link',
-    ),
-  );
+    ],
+  ];
 
   // Alert the user of autochecked items. Only set the message on GET requests
   // to prevent it from reappearing after saving the form. (Testing the request
   // method may not be the "correct" way to accomplish this.)
   if ($num_autochecked_items && $_SERVER['REQUEST_METHOD'] == 'GET') {
-    $args = array(
+    $args = [
       '%checklist' => $checklist->title,
       '@num' => $num_autochecked_items,
-    );
+    ];
     $message = format_plural(
       $num_autochecked_items,
       t('%checklist found 1 unchecked item that was already completed and checked it for you. Save the form to record the change.', $args),
@@ -207,7 +207,7 @@ function checklistapi_checklist_form_submit($form, &$form_state) {
  *   TRUE when in compact mode, or FALSE when in expanded mode.
  */
 function checklistapi_compact_mode() {
-  return isset($_COOKIE['Drupal_visitor_checklistapi_compact_mode']) ? $_COOKIE['Drupal_visitor_checklistapi_compact_mode'] : variable_get('checklistapi_compact_mode', FALSE);
+  return !empty($_COOKIE['Drupal_visitor_checklistapi_compact_mode']) ? $_COOKIE['Drupal_visitor_checklistapi_compact_mode'] : variable_get('checklistapi_compact_mode', FALSE);
 }
 
 /**
@@ -218,7 +218,7 @@ function checklistapi_compact_mode() {
  *   "off". Defaults to "off".
  */
 function checklistapi_compact_page($mode = 'off') {
-  user_cookie_save(array('checklistapi_compact_mode' => ($mode == 'on')));
+  user_cookie_save(['checklistapi_compact_mode' => ($mode == 'on')]);
   drupal_goto();
 }
 
@@ -233,24 +233,24 @@ function theme_checklistapi_compact_link() {
     $output .= l(
       t('Show item descriptions'),
       current_path() . '/compact/off',
-      array(
-        'attributes' => array(
+      [
+        'attributes' => [
           'title' => t('Expand layout to include item descriptions.'),
-        ),
+        ],
         'query' => drupal_get_destination(),
-      )
+      ]
     );
   }
   else {
     $output .= l(
       t('Hide item descriptions'),
       current_path() . '/compact/on',
-      array(
-        'attributes' => array(
+      [
+        'attributes' => [
           'title' => t('Compress layout by hiding item descriptions.'),
-        ),
+        ],
         'query' => drupal_get_destination(),
-      )
+      ]
     );
   }
   $output .= '</div>';

@@ -454,7 +454,7 @@ class DrupalTextMetaTag extends DrupalDefaultMetaTag {
     $form['value'] += array(
       '#type' => 'textfield',
       '#title' => $this->info['label'],
-      '#description' => !empty($this->info['description']) ? $this->info['description'] : '',
+      '#description' => $this->info['description'],
       '#default_value' => isset($this->data['value']) ? $this->data['value'] : '',
       '#element_validate' => array('token_element_validate'),
       '#token_types' => $options['token types'],
@@ -466,10 +466,17 @@ class DrupalTextMetaTag extends DrupalDefaultMetaTag {
       $form['value']['#description'] .= ' ' . t('Multiple values may be used, separated by a comma. Note: Tokens that return multiple values will be handled automatically.');
     }
 
-    // Optionally limit the field to a certain length.
-    $maxlength = $this->maxlength();
-    if (!empty($maxlength)) {
-      $form['value']['#description'] .= ' ' . t('This will be truncated to a maximum of %max characters.', array('%max' => $maxlength));
+    // Optionally limit the field to a certain length, and support the Maxlength
+    // module if it is available.
+    $maxlength = (int) $this->maxlength();
+    if (!empty($maxlength) && $maxlength > 0) {
+      $form['value']['#description'] .= ' ' . t('This will be truncated to a maximum of %max characters after any tokens are processsed.', array('%max' => $maxlength));
+
+      // Optional support for the Maxlength module.
+      if (variable_get('metatag_use_maxlength', TRUE)) {
+        $form['value']['#maxlength_js'] = TRUE;
+        $form['value']['#maxlength'] = $maxlength;
+      }
     }
 
     // Optional handling for images.
@@ -512,6 +519,12 @@ class DrupalTextMetaTag extends DrupalDefaultMetaTag {
    * {@inheritdoc}
    */
   public function getValue(array $options = array()) {
+    // If the value wasn't set there's no point in proceeding. Also, this type
+    // of tag should not have arrays passed to it.
+    if (!isset($this->data['value']) || !is_string($this->data['value'])) {
+      return '';
+    }
+
     $options += array(
       'instance' => '',
       'token data' => array(),
@@ -521,9 +534,12 @@ class DrupalTextMetaTag extends DrupalDefaultMetaTag {
       'raw' => FALSE,
     );
 
-    // If the value wasn't set there's no point in proceeding.
-    if (!isset($this->data['value'])) {
-      return '';
+    // If entity_translation_hierarchy is being used then ensure tokens and
+    // strings are generated using the current language rather than the
+    // fallback.
+    if (module_exists('entity_translation_hierarchy')) {
+      global $language;
+      $options['language'] = $language;
     }
 
     $value = $this->data['value'];
@@ -612,6 +628,99 @@ class DrupalTextMetaTag extends DrupalDefaultMetaTag {
 
     // Optionally truncate the value.
     $value = $this->truncate($value);
+
+    // Translate the final output string prior to output. Use the
+    // 'output' i18n_string object type, and pass along the meta tag's
+    // options as the context so it can be handled appropriately.
+    $value = metatag_translate_metatag($value, $this->info['name'], $options, NULL, TRUE);
+
+    return $value;
+  }
+
+}
+
+/**
+ * Robots meta tag controller.
+ */
+class DrupalRobotsMetaTag extends DrupalDefaultMetaTag {
+
+  /**
+   * {@inheritdoc}
+   */
+  function __construct(array $info, array $data = NULL) {
+    // Ensure that the $data['value] argument is an array.
+    if (empty($data['value'])) {
+      $data['value'] = array();
+    }
+    $data['value'] = (array) $data['value'];
+
+    parent::__construct($info, $data);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getForm(array $options = array()) {
+    $form['value'] = isset($this->info['form']) ? $this->info['form'] : array();
+
+    $form['value'] += array(
+      '#type' => 'checkboxes',
+      '#title' => $this->info['label'],
+      '#description' => !empty($this->info['description']) ? $this->info['description'] : '',
+      '#default_value' => isset($this->data['value']) ? $this->data['value'] : array(),
+    );
+
+    if (!empty($this->info['google_directives'])) {
+      foreach ($this->info['google_directives'] as $serving_directive_name => $serving_directive) {
+        switch ($serving_directive['type']) {
+          case 'textfield':
+            $form[$serving_directive_name] = array(
+              '#type' => 'textfield',
+              '#title' => $serving_directive['label'],
+              '#description' => !empty($serving_directive['description']) ? $serving_directive['description'] : '',
+              '#default_value' => isset($this->data[$serving_directive_name]) ? $this->data[$serving_directive_name] : '',
+              '#element_validate' => array('token_element_validate'),
+              '#token_types' => $options['token types'],
+              '#maxlength' => 1024,
+            );
+            break;
+          case 'select':
+            $form[$serving_directive_name] = array(
+              '#type' => 'select',
+              '#title' => $serving_directive['label'],
+              '#options' => $serving_directive['options'],
+              '#empty_option' => t('- Select -'),
+              '#description' => !empty($serving_directive['description']) ? $serving_directive['description'] : '',
+              '#default_value' => isset($this->data[$serving_directive_name]) ? $this->data[$serving_directive_name] : '',
+            );
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getValue(array $options = array()) {
+    $values = array_keys(array_filter($this->data['value']));
+    if (!empty($this->info['google_directives'])) {
+      foreach ($this->info['google_directives'] as $serving_directive_name => $serving_directive) {
+        if (isset($this->data[$serving_directive_name])
+          && $this->data[$serving_directive_name] != '') {
+          // Add an additional value into content of the meta tag.
+          $values[] = $serving_directive_name . ':' . $this->data[$serving_directive_name];
+        }
+      }
+    }
+    sort($values);
+    $value = implode(', ', $values);
+
+    $value = $this->tidyValue($value);
 
     // Translate the final output string prior to output. Use the
     // 'output' i18n_string object type, and pass along the meta tag's

@@ -353,7 +353,7 @@ function metatag_schema() {
  * Implements hook_install().
  */
 function metatag_install() {
-  drupal_set_message(t("Thank you for installing the Metatag module. It is recommended to read the module's <a href=\"!url\" title=\"Read the Metatag module's documentation\">README.txt</a> file as there are some known issues that may affect this site.", array('!url' => url(drupal_get_path('module', 'metatag') . '/README.txt'))));
+  drupal_set_message(t("Thank you for installing the Metatag module. It is recommended to read the module's <a href=\"!url\" aria-label=\"Read the Metatag module's documentation\">README.txt</a> file as there are some known issues that may affect this site.", array('!url' => url(drupal_get_path('module', 'metatag') . '/README.txt'))));
 
   // Always enable the node, taxonomy term and user entities.
   foreach (array('node', 'taxonomy_term', 'user') as $entity_type) {
@@ -491,6 +491,9 @@ function metatag_uninstall() {
   // Sanitize token replacement output.
   variable_del('metatag_token_sanitize');
 
+  // Optional support for the Maxlength module.
+  variable_del('metatag_use_maxlength');
+
   // Remove all possible 'enable' variables.
   foreach (entity_get_info() as $entity_type => $entity_info) {
     variable_del('metatag_enable_' . $entity_type);
@@ -599,19 +602,21 @@ function metatag_update_replace_entity_tag(array &$sandbox, $old_tag, $new_tag) 
 /**
  * Replace one meta tag's value in the entity records.
  *
+ * Note: this only works with meta tags that store a single "value" item.
+ *
  * @param array $sandbox
  *   A Batch API sandbox, passed by reference.
- * @param string $meta_tag
+ * @param string $tag_name
  *   The meta tag that needs its value replaced.
  * @param string $old_value
  *   The meta tag value that is to be replaced.
  * @param string $new_value
  *   The meta tag value that replaces the old one.
  */
-function metatag_update_replace_entity_value(array &$sandbox, $meta_tag, $old_value, $new_value) {
+function metatag_update_replace_entity_value(array &$sandbox, $tag_name, $old_value, $new_value) {
   // The condition used for both queries.
   $db_and = db_and();
-  $db_and->condition('m.data', '%' . db_like('"' . $meta_tag . '"') . '%', 'LIKE');
+  $db_and->condition('m.data', '%' . db_like('"' . $tag_name . '"') . '%', 'LIKE');
   $db_and->condition('m.data', '%' . db_like('"' . $old_value . '"') . '%', 'LIKE');
 
   if (!isset($sandbox['progress'])) {
@@ -624,7 +629,7 @@ function metatag_update_replace_entity_value(array &$sandbox, $meta_tag, $old_va
       ->fetchField();
 
     if (empty($records_count)) {
-      return t('No Metatag entity records needed to have the "@tag" meta tag "@old_value" value replaced.', array('@tag' => $meta_tag, '@old_value' => $old_value));
+      return t('No Metatag entity records needed to have the "@tag" meta tag "@old_value" value replaced.', array('@tag' => $tag_name, '@old_value' => $old_value));
     }
 
     $sandbox['max'] = $records_count;
@@ -651,20 +656,22 @@ function metatag_update_replace_entity_value(array &$sandbox, $meta_tag, $old_va
   foreach ($records as $record) {
     $record->data = unserialize($record->data);
 
-    if (isset($record->data[$meta_tag])) {
-      $record->data[$meta_tag]['value'] = str_replace($old_value, $new_value, $record->data[$meta_tag]['value']);
-      drupal_write_record('metatag', $record, $keys);
+    if (isset($record->data[$tag_name]['value'])) {
+      if ($record->data[$tag_name]['value'] == $old_value) {
+        $record->data[$tag_name]['value'] = $new_value;
+        drupal_write_record('metatag', $record, $keys);
 
-      // Clear the cache for the entity this belongs to.
-      entity_get_controller($record->entity_type)->resetCache(array($record->entity_id));
+        // Clear the cache for the entity this belongs to.
+        entity_get_controller($record->entity_type)->resetCache(array($record->entity_id));
 
-      $sandbox['count']++;
+        $sandbox['count']++;
+      }
     }
 
     $sandbox['progress']++;
   }
 
-  if (!empty($count)) {
+  if (!empty($sandbox['progress'])) {
     // In some cases the query yields results that cannot be fixed and we would
     // run into an infinite loop. Stop immediately if we processed all records.
     if ($sandbox['progress'] >= $sandbox['max']) {
@@ -676,7 +683,7 @@ function metatag_update_replace_entity_value(array &$sandbox, $meta_tag, $old_va
   }
   else {
     $sandbox['#finished'] = TRUE;
-    return t('Replaced the value of @count entity records for the "@meta_tag" meta tag.', array('@meta_tag' => $meta_tag, '@count' => $sandbox['count']));
+    return t('Replaced the value of @count entity records for the "@meta_tag" meta tag.', array('@meta_tag' => $tag_name, '@count' => $sandbox['count']));
   }
 }
 
@@ -739,25 +746,25 @@ function metatag_update_replace_config_tag($old_tag, $new_tag) {
 /**
  * Replace one meta tag with another in the configs.
  *
- * @param string $meta_tag
+ * @param string $tag_name
  *   The meta tag that needs its value replaced.
  * @param string $old_value
  *   The meta tag value that is to be replaced.
  * @param string $new_value
  *   The meta tag value that replaces the old one.
  */
-function metatag_update_replace_config_value($meta_tag, $old_value, $new_value) {
+function metatag_update_replace_config_value($tag_name, $old_value, $new_value) {
   // Find all {metatag_config} records that contained an entry for the old meta
   // tag.
   $db_and = db_and();
-  $db_and->condition('m.config', '%' . db_like('"' . $meta_tag . '"') . '%', 'LIKE');
+  $db_and->condition('m.config', '%' . db_like('"' . $tag_name . '"') . '%', 'LIKE');
   $db_and->condition('m.config', '%' . db_like('"' . $old_value . '"') . '%', 'LIKE');
   $records = db_select('metatag_config', 'm')
     ->fields('m', array('cid', 'config'))
     ->condition($db_and)
     ->execute();
   // This message will be returned if nothing needed to be updated.
-  $none_message = t('No Metatag configuration records needed to have the "@tag" meta tag values updated. That said, there may be other configurations elsewhere that do need updating.', array('@tag' => $meta_tag));
+  $none_message = t('No Metatag configuration records needed to have the "@tag" meta tag values updated. That said, there may be other configurations elsewhere that do need updating.', array('@tag' => $tag_name));
 
   // Loop over the values and correct them.
   if ($records->rowCount() == 0) {
@@ -770,17 +777,19 @@ function metatag_update_replace_config_value($meta_tag, $old_value, $new_value) 
     $counter = 0;
     foreach ($records as $record) {
       $record->config = unserialize($record->config);
-      if (isset($record->config[$meta_tag])) {
-        $record->config[$meta_tag]['value'] = str_replace($old_value, $new_value, $record->config[$meta_tag]['value']);
-        drupal_write_record('metatag_config', $record, $keys);
-        $counter++;
+      if (isset($record->config[$tag_name]['value'])) {
+        if ($record->config[$tag_name]['value'] == $old_value) {
+          $record->config[$tag_name]['value'] = $new_value;
+          drupal_write_record('metatag_config', $record, $keys);
+          $counter++;
+        }
       }
     }
     if ($counter == 0) {
       $message = $none_message;
     }
     else {
-      $message = t('Replaced the value of @count entity records for the "@meta_tag" meta tag.', array('@meta_tag' => $meta_tag, '@count' => $counter));
+      $message = t('Replaced the value of @count entity records for the "@meta_tag" meta tag.', array('@meta_tag' => $tag_name, '@count' => $counter));
     }
   }
 
@@ -1435,7 +1444,7 @@ function _metatag_remove_dupes($entity_type) {
       // More than one record, work out which one to keep.
       elseif (count($langs) > 1) {
         // Work out the entity's language.
-        $entity = entity_load($entity_type, $entity_id);
+        $entity = entity_load($entity_type, array($entity_id));
         $entity_language = entity_language($entity_type, $entity);
         if (empty($language)) {
           $entity_language = LANGUAGE_NONE;
@@ -2640,4 +2649,34 @@ function metatag_update_7115() {
  */
 function metatag_update_7116() {
   // Nothing to see here.
+}
+
+/**
+ * Update twitter:card values to replace 'product' with 'summary'.
+ */
+function metatag_update_7117(array &$sandbox) {
+  metatag_update_replace_entity_value($sandbox, 'twitter:card', 'product', 'summary');
+}
+
+/**
+ * Update twitter:card values to replace 'gallery' with 'summary_large_image'.
+ */
+function metatag_update_7118(array &$sandbox) {
+  metatag_update_replace_entity_value($sandbox, 'twitter:card', 'gallery', 'summary_large_image');
+}
+
+/**
+ * Update twitter:card values to replace 'photo' with 'summary_large_image'.
+ */
+function metatag_update_7119(array &$sandbox) {
+  metatag_update_replace_entity_value($sandbox, 'twitter:card', 'photo', 'summary_large_image');
+}
+
+/**
+ * Update twitter:card configs to replace deprecated values.
+ */
+function metatag_update_7120() {
+  metatag_update_replace_config_value('twitter:card', 'product', 'summary');
+  metatag_update_replace_config_value('twitter:card', 'gallery', 'summary_large_image');
+  metatag_update_replace_config_value('twitter:card', 'photo', 'summary_large_image');
 }

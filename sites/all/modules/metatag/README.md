@@ -1,5 +1,5 @@
-Metatag
--------
+# Metatag
+
 This module allows you to automatically provide structured metadata, aka "meta
 tags", about your website and web pages.
 
@@ -17,8 +17,8 @@ For additional information, see the online documentation:
   https://www.drupal.org/docs/7/modules/metatag
 
 
-Features
---------------------------------------------------------------------------------
+## Features
+
 The primary features include:
 
 * The current supported basic meta tags are ABSTRACT, DESCRIPTION, CANONICAL,
@@ -141,46 +141,56 @@ The primary features include:
 * If the Media module (v2) is installed, the Media WYSIWYG submodule will be
   used to automatically filter out Media's embed codes.
 
+* If the Language Hierarchy module is installed, it will be used to identify
+  which language will be used when loading meta tags for a given entity.
 
-Configuration
---------------------------------------------------------------------------------
- 1. On the People Permissions administration page ("Administer >> People
-    >> Permissions") you need to assign:
+* If the Maxlength module is installed, meta tags that have a maximum length
+  defined in the settings will have that maximum length enforced; this may be
+  disabled in the settings if it proves to be problematic.
 
-    - The "Administer meta tags" permission to the roles that are allowed to
-      access the meta tags admin pages to control the site defaults.
 
-    - The "Edit meta tags" permission to the roles that are allowed to change
-      meta tags on each individual page (node, term, etc).
+## Configuration
 
- 2. The main administrative page controls the site-wide defaults, both global
+1. On the People Permissions administration page ("Administer >> People >>
+  Permissions") you need to assign:
+
+  - The "Administer meta tags" permission to the roles that are allowed to
+    access the meta tags admin pages to control the site defaults.
+  - The "Edit meta tags" permission to the roles that are allowed to change
+    meta tags on each individual page (node, term, etc).
+
+2. The main administrative page controls the site-wide defaults, both global
     settings and defaults per entity (node, term, etc), in addition to those
-    assigned specifically for the front page:
-      admin/config/search/metatags
+    assigned specifically for the front page: `admin/config/search/metatags`
 
- 3. The list of supported entity types (nodes, taxonomy terms, etc) and bundles
-    (content types, vocabularies, etc) may be controlled from the Settings page:
-      admin/config/search/metatags/settings
+3. The list of supported entity types (nodes, taxonomy terms, etc) and bundles
+   (content types, vocabularies, etc) may be controlled from the Settings page:
+   `admin/config/search/metatags/settings`
 
- 4. In order to provide a specific configuration per entity bundle (content
-    type, vocabulary, etc), click "Add default meta tags".
+4. In order to provide a specific configuration per entity bundle (content
+   type, vocabulary, etc), click "Add default meta tags".
 
- 5. Each supported entity object (nodes, terms, users) will have a set of meta
-    tag fields available for customization on their respective edit page, these
-    will inherit their values from the defaults assigned in #2 above. Any
-    values that are not overridden per object will automatically update should
-    the defaults be updated.
+5. Each supported entity object (nodes, terms, users) will have a set of meta
+   tag fields available for customization on their respective edit page, these
+   will inherit their values from the defaults assigned in #2 above. Any
+   values that are not overridden per object will automatically update should
+   the defaults be updated.
 
- 6. As the meta tags are output using Tokens, it may be necessary to customize
-    the token display for the site's entities (content types, vocabularies,
-    etc). To do this go to e.g., admin/structure/types/manage/article/display,
-    in the "Custom Display Settings" section ensure that "Tokens" is checked
-    (save the form if necessary), then to customize the tokens go to:
-    admin/structure/types/manage/article/display/token
+6. As the meta tags are output using Tokens, it may be necessary to customize
+   the token display for the site's entities (content types, vocabularies,
+   etc). To do this go to e.g., `admin/structure/types/manage/article/display`,
+   in the "Custom Display Settings" section ensure that "Tokens" is checked
+   (save the form if necessary), then to customize the tokens go to:
+   `admin/structure/types/manage/article/display/token`
 
 
-Internationalization with the Translation (core) and Entity Translation modules
---------------------------------------------------------------------------------
+## Internationalization
+
+Multiple options are supported, depending upon what the individual site needs.
+
+
+### With the Translation (core) and Entity Translation modules
+
 The module works with the core Translation module, allowing the meta tags for a
 specific entity (node, term, etc) to be tied to a specific language. It also
 supports the Entity Translation module, which may work better thank the basic
@@ -190,15 +200,15 @@ each language supported on the site, and that the correct meta tags should
 always be displayed for each locale.
 
 
-Internationalization with the i18n modules
---------------------------------------------------------------------------------
+### With the i18n modules
+
 Using the String Translation (i18n_string) submodule of the Internationalization
 (i18n) module package it is possible to translate meta tags:
 
-* All default configurations (admin/config/search/metatag) are translatable.
+* All default configurations (`admin/config/search/metatag`) are translatable.
   When a configuration is created or updated it will pass the values to the
-  i18n_string system. Additionally it is possible to bulk update them via the
-  string translation page (admin/config/regional/translate/i18n_string).
+  `i18n_string` system. Additionally it is possible to bulk update them via the
+  string translation page (`admin/config/regional/translate/i18n_string`).
 
 * Meta tags for all submodules (Metatag:Context, Metatag:Panels, Metatag:Views)
   are translatable. Similar to the default configurations, these meta tags are
@@ -218,34 +228,32 @@ Translation submodule of the i18n package:
 * metatag_pager_string - The custom pager string.
 
 
-Internationalization with the Smartling module
---------------------------------------------------------------------------------
+### With the Smartling module
+
 The Smartling translation service may be used with the Metatag module provide an
 improved UX around the meta tag translation process. In order to do this, the
 Smartling Interface Translation (smartling_interface_translation) module must
 be enabled.
 
-For further details see the module's project page:
-  https://www.drupal.org/project/smartling
+For further details see the [Smartling module's project
+page](https://www.drupal.org/project/smartling).
 
 
-Search API integration
---------------------------------------------------------------------------------
-Entity meta tag values can be made searchable using the Search API module
-(https://www.drupal.org/project/search_api).
+## Search API integration
 
- 1. Select "Meta tags" under "Data alterations" in the filters for the
-    index:
-      admin/config/search/search_api/index/INDEX NAME/workflow
- 2. Meta tag fields will now appear under "Fields" and can be enabled there:
-      admin/config/search/search_api/index/INDEX NAME/fields
+Entity meta tag values can be made searchable using the [Search API
+module](https://www.drupal.org/project/search_api).
+
+1. Select "Meta tags" under "Data alterations" in the filters for the index:
+   `admin/config/search/search_api/index/INDEX NAME/workflow`
+2. Meta tag fields will now appear under "Fields" and can be enabled there:
+   `admin/config/search/search_api/index/INDEX NAME/fields`
 
 
-Fine tuning & suggestions
---------------------------------------------------------------------------------
+## Fine tuning & suggestions
+
 * There are many options available on the settings page to control how Metatag
-  works:
-    admin/config/search/metatags/settings
+  works: `admin/config/search/metatags/settings`
 
 * It is possible to "disable" the meta tags provided by Drupal core, i.e.
   "generator", "canonical URL" and "shortlink", though it may not be completely
@@ -270,17 +278,22 @@ Fine tuning & suggestions
   As an example, in order to load an image from a node field named
   "field_meta_tag_image" using the "seo_thumbnail" style, the following token
   would be used:
-    [node:field_meta_tag_image:seo_thumbnail:uri]
+
+        [node:field_meta_tag_image:seo_thumbnail:uri]
+
   or
-    [node:field_meta_tag_image:seo_thumbnail]
+
+        [node:field_meta_tag_image:seo_thumbnail]
+
   (They give the same results)
   Additionally, dimensions of the image may be obtained from the following:
-    [node:field_meta_tag_image:seo_thumbnail:width]
-    [node:field_meta_tag_image:seo_thumbnail:height]
+
+        [node:field_meta_tag_image:seo_thumbnail:width]
+        [node:field_meta_tag_image:seo_thumbnail:height]
 
 
-Developers
---------------------------------------------------------------------------------
+## Developers
+
 Full API documentation is available in metatag.api.php.
 
 It is not necessary to control Metatag via the entity API, any entity that has
@@ -288,18 +301,24 @@ view modes defined and is not a configuration entity is automatically suitable
 for use.
 
 The meta tags for a given entity object (node, etc) can be obtained as follows:
-  $metatags = metatags_get_entity_metatags($entity_id, $entity_type, $langcode);
+
+    $metatags = metatags_get_entity_metatags($entity_id, $entity_type, $langcode);
+
 The result will be a nested array of meta tag structures ready for either output
 via drupal_render(), or examining to identify the actual text values.
 
 
-Troubleshooting / known issues
---------------------------------------------------------------------------------
+## Troubleshooting / known issues
+
 * When using custom page template files, e.g., page--front.tpl.php, it is
   important to ensure that the following code is present in the template file:
-    <?php render($page['content']); ?>
+
+        <?php render($page['content']); ?>
+
   or
-    <?php render($page['content']['metatags']); ?>
+
+        <?php render($page['content']['metatags']); ?>
+
   Without one of these being present the meta tags will not be displayed.
 * An alternative method to fixing the missing-tags problem is to change the page
   region used to output the meta tags. The region used may be controlled from
@@ -317,9 +336,13 @@ Troubleshooting / known issues
   page and not e.g., the person who authored a page.
 * Certain browser plugins, e.g., on Chrome, can cause the page title to be
   displayed with additional double quotes, e.g., instead of:
-    <title>The page title | My cool site</title>
+
+        <title>The page title | My cool site</title>
+
   it will show:
-    <title>"The page title | My cool site"</title>
+
+        <title>"The page title | My cool site"</title>
+
   The solution is to remove the browser plugin - the page's actual output is not
   affected, it is just a problem in the browser.
 * Drupal core versions before v7.33 had a bug which caused validation problems
@@ -335,88 +358,69 @@ Troubleshooting / known issues
   limitation of the token browser.
 
 
-Related modules
---------------------------------------------------------------------------------
+## Related modules
+
 Some modules are available that extend Metatag with additional or complimentary
 functionality:
 
-* Schema.org Metatag
-  https://www.drupal.org/project/schema_metatag
+* [Schema.org Metatag](https://www.drupal.org/project/schema_metatag) -
   Extensive solution for adding schema.org / JSON-LD support to Metatag.
 
-* Transliteration
-  https://drupal.org/project/transliteration
+* [Transliteration](https://drupal.org/project/transliteration) -
   Tidies up filenames for uploaded files, e.g. it can remove commas from
   filenames that could otherwise break certain meta tags.
 
-* Imagecache Token
-  https://www.drupal.org/project/imagecache_token
+* [Imagecache Token](https://www.drupal.org/project/imagecache_token) -
   Use tokens to load images via image styles, rather than forcing meta tags to
   use the original image.
 
-* Alternative hreflang
-  https://www.drupal.org/project/hreflang
+* [Alternative hreflang](https://www.drupal.org/project/hreflang) -
   An alternative to the Metatag:hreflang module. Automatically outputs
-  <link rel="alternate" hreflang="x" href="http://" /> meta tags on every page
+  <link rel="alternate" hreflang="x" href="https://" /> meta tags on every page
   for each language/locale available on the site. Also does not provide any way
   of overriding the values or setting the x-default value.
 
-* Domain Meta Tags
-  https://drupal.org/project/domain_meta
+* [Domain Meta Tags](https://drupal.org/project/domain_meta) -
   Integrates with the Domain Access module, so each site of a multi-domain
   install can separately control their meta tags.
 
-* Select or Other
-  https://drupal.org/project/select_or_other
+* [Select or Other](https://drupal.org/project/select_or_other) -
   Enhances the user experience of the metatag_google_plus and metatag_opengraph
   submodules by allowing the creation of custom itemtype and og:types values.
 
-* Node Form Panes
-  https://drupal.org/project/node_form_panes
+* [Node Form Panes](https://drupal.org/project/node_form_panes) -
   Create custom node-edit forms and control the location of the Metatag fields.
 
-* Textimage
-  https://drupal.org/project/textimage
+* [Textimage](https://drupal.org/project/textimage) -
   Supports using Textimage's custom tokens in meta tag fields.
 
-* Field Multiple Limit
-  https://drupal.org/project/field_multiple_limit
+* [Field Multiple Limit](https://drupal.org/project/field_multiple_limit) -
   Allows control over how many items are output in a multi-item field, useful
   with meta tags that only allow for one item but which are assigned from fields
   which accept multiple items, e.g. og:audio and og:video.
 
-* Real-time SEO for Drupal
-  https://www.drupal.org/project/yoast_seo
+* [Real-time SEO for Drupal](https://www.drupal.org/project/yoast_seo) -
   Uses the YoastSEO.js library and service (https://yoast.com/) to provide
   realtime feedback on the meta tags.
 
-* Parse.ly Publishing Analytics
-  https://www.drupal.org/project/parsely
+* [Parse.ly Publishing Analytics](https://www.drupal.org/project/parsely) -
   Automatically generates meta tags for the Parse.ly service.
 
-* Metatag Cxense
-  https://www.drupal.org/project/metatag_cxense
+* [Metatag Cxense](https://www.drupal.org/project/metatag_cxense) -
   Adds support for the Cxense meta tags used by their DMP and Insight services.
 
 
-Credits / contact
---------------------------------------------------------------------------------
-Currently maintained by Damien McKenna [1] and Dave Reid [2]; all initial
-development was by Dave Reid.
+## Credits / contact
 
-Ongoing development is sponsored by Mediacurrent [3] and Lullabot [4]. All
-initial development was sponsored by Acquia [5] and Palantir.net [6].
+Currently maintained by [Damien McKenna](https://www.drupal.org/u/damienmckenna)
+and [Dave Reid](https://www.drupal.org/u/dave-reid); all initial development
+was by Dave Reid.
+
+Ongoing development is sponsored by
+[Mediacurrent](https://www.mediacurrent.com/) and
+[Lullabot](https://www.lullabot.com/). All initial development was sponsored by
+[Acquia](https://www.acquia.com/) and [Palantir.net](https://www.palantir.net/).
 
 The best way to contact the authors is to submit an issue, be it a support
-request, a feature request or a bug report, in the project issue queue:
-  https://www.drupal.org/project/issues/metatag
-
-
-References
---------------------------------------------------------------------------------
-1: https://www.drupal.org/u/damienmckenna
-2: https://www.drupal.org/u/dave-reid
-3: https://www.mediacurrent.com/
-4: https://www.lullabot.com/
-5: https://www.acquia.com/
-6: https://www.palantir.net/
+request, a feature request or a bug report, in the [Metatag issue
+queue](https://www.drupal.org/project/issues/metatag).

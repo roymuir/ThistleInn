@@ -71,7 +71,7 @@ class ChecklistapiChecklist {
    *
    * @var array
    */
-  public $items = array();
+  public $items = [];
 
   /**
    * The saved progress data.
@@ -96,27 +96,17 @@ class ChecklistapiChecklist {
       $property_name = checklistapi_strtolowercamel(drupal_substr($property_key, 1));
       $this->$property_name = $value;
     }
-    $this->savedProgress = variable_get($this->getSavedProgressVariableName(), array());
+    $this->savedProgress = variable_get($this->getSavedProgressVariableName(), []);
   }
 
   /**
-   * Gets the total number of completed items.
+   * Gets the name of the Drupal variable for the checklist's saved progress.
    *
-   * @return int
-   *   The number of completed items.
+   * @return string
+   *   The Drupal variable name.
    */
-  public function getNumberCompleted() {
-    return (!empty($this->savedProgress['#completed_items'])) ? $this->savedProgress['#completed_items'] : 0;
-  }
-
-  /**
-   * Gets the total number of items.
-   *
-   * @return int
-   *   The number of items.
-   */
-  public function getNumberOfItems() {
-    return $this->numberOfItems;
+  public function getSavedProgressVariableName() {
+    return "checklistapi_checklist_{$this->id}";
   }
 
   /**
@@ -129,7 +119,7 @@ class ChecklistapiChecklist {
   public function getLastUpdatedUser() {
     if (isset($this->savedProgress['#changed_by'])) {
       $last_updated_user = user_load($this->savedProgress['#changed_by']);
-      return theme('username', array('account' => $last_updated_user));
+      return theme('username', ['account' => $last_updated_user]);
     }
     else {
       return t('n/a');
@@ -161,25 +151,35 @@ class ChecklistapiChecklist {
   }
 
   /**
+   * Gets the total number of items.
+   *
+   * @return int
+   *   The number of items.
+   */
+  public function getNumberOfItems() {
+    return $this->numberOfItems;
+  }
+
+  /**
+   * Gets the total number of completed items.
+   *
+   * @return int
+   *   The number of completed items.
+   */
+  public function getNumberCompleted() {
+    return (!empty($this->savedProgress['#completed_items'])) ? $this->savedProgress['#completed_items'] : 0;
+  }
+
+  /**
    * Clears the saved progress for the checklist.
    *
    * Deletes the Drupal variable containing the checklist's saved progress.
    */
   public function clearSavedProgress() {
     variable_del($this->getSavedProgressVariableName());
-    drupal_set_message(t('%title saved progress has been cleared.', array(
+    drupal_set_message(t('%title saved progress has been cleared.', [
       '%title' => $this->title,
-    )));
-  }
-
-  /**
-   * Gets the name of the Drupal variable for the checklist's saved progress.
-   *
-   * @return string
-   *   The Drupal variable name.
-   */
-  public function getSavedProgressVariableName() {
-    return "checklistapi_checklist_{$this->id}";
+    ]));
   }
 
   /**
@@ -204,11 +204,11 @@ class ChecklistapiChecklist {
     global $user;
     $time = time();
     $num_changed_items = 0;
-    $progress = array(
+    $progress = [
       '#changed' => $time,
       '#changed_by' => $user->uid,
       '#completed_items' => 0,
-    );
+    ];
 
     // Loop through groups.
     foreach ($values as $group_key => $group) {
@@ -233,10 +233,10 @@ class ChecklistapiChecklist {
           }
           else {
             // Item is newly checked. Set new value.
-            $new_item = array(
+            $new_item = [
               '#completed' => $time,
               '#uid' => $user->uid,
-            );
+            ];
             $num_changed_items++;
           }
         }
@@ -262,7 +262,7 @@ class ChecklistapiChecklist {
       $num_changed_items,
       '%title progress has been saved. 1 item changed.',
       '%title progress has been saved. @count items changed.',
-      array('%title' => $this->title)
+      ['%title' => $this->title]
     ));
   }
 

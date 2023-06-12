@@ -14,11 +14,11 @@ class ChecklistapiUnitTestCase extends DrupalUnitTestCase {
    * {@inheritdoc}
    */
   public static function getInfo() {
-    return array(
+    return [
       'name' => 'Unit tests',
       'description' => 'Test Checklist API classes and functions.',
       'group' => 'Checklist API',
-    );
+    ];
   }
 
   /**
@@ -42,12 +42,12 @@ class ChecklistapiUnitTestCase extends DrupalUnitTestCase {
     $this->assertEqual($output['group_one']['#weight'], -1, 'Retained a valid element weight.');
     $this->assertEqual(
       element_children($output),
-      array('group_one', 'group_two', 'group_three', 'group_four'),
+      ['group_one', 'group_two', 'group_three', 'group_four'],
       'Sorted elements by weight.'
     );
     $this->assertEqual(
       element_children($output['group_one']['item_one']),
-      array('link_one', 'link_two', 'link_three'),
+      ['link_one', 'link_two', 'link_three'],
       'Recursed through element descendants.'
     );
   }
@@ -69,17 +69,23 @@ class ChecklistapiUnitTestCase extends DrupalUnitTestCase {
  * @todo Add tests for clearing saved progress.
  */
 class ChecklistapiWebTestCase extends DrupalWebTestCase {
+
+  /**
+   * Priviledged user obeject.
+   *
+   * @var object
+   */
   protected $privilegedUser;
 
   /**
    * {@inheritdoc}
    */
   public static function getInfo() {
-    return array(
+    return [
       'name' => 'Functional tests',
       'description' => 'Test the functionality of Checklist API.',
       'group' => 'Checklist API',
-    );
+    ];
   }
 
   /**
@@ -87,7 +93,10 @@ class ChecklistapiWebTestCase extends DrupalWebTestCase {
    */
   public function setUp() {
     parent::setUp('checklistapi_example');
-    $permissions = array('edit any checklistapi checklist', 'view checklistapi checklists report');
+    $permissions = [
+      'edit any checklistapi checklist',
+      'view checklistapi checklists report',
+    ];
     $this->privilegedUser = $this->drupalCreateUser($permissions);
     $this->drupalLogin($this->privilegedUser);
   }
@@ -99,7 +108,7 @@ class ChecklistapiWebTestCase extends DrupalWebTestCase {
     $this->drupalGet('admin/config/development/checklistapi-example');
     $this->assertResponse(200, 'Granted access to user with "edit any checklistapi checklist" permission.');
 
-    $permissions = array('edit example_checklist checklistapi checklist');
+    $permissions = ['edit example_checklist checklistapi checklist'];
     $semi_privileged_user = $this->drupalCreateUser($permissions);
     $this->drupalLogin($semi_privileged_user);
     $this->drupalGet('admin/config/development/checklistapi-example');
@@ -131,7 +140,7 @@ class ChecklistapiWebTestCase extends DrupalWebTestCase {
     $menu_item = menu_get_item('admin/config/development/checklistapi-example');
     $this->assertEqual($menu_item['path'], 'admin/config/development/checklistapi-example', 'Created per-checklist menu item.');
 
-    $permissions = array('edit example_checklist checklistapi checklist');
+    $permissions = ['edit example_checklist checklistapi checklist'];
     $this->assertTrue($this->checkPermissions($permissions), 'Created per-checklist permission.');
 
     $this->drupalGet('admin/config/development/checklistapi-example');

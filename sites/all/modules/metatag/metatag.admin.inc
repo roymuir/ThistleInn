@@ -416,12 +416,17 @@ function metatag_config_delete_form($form, &$form_state, $config) {
  */
 function metatag_config_delete_form_submit($form, &$form_state) {
   $config = metatag_config_load($form_state['values']['instance']);
-  metatag_config_delete($config);
+  if (is_object($config)) {
+    metatag_config_delete($config);
 
-  $label = metatag_config_instance_label($config->instance);
-  $delete = metatag_config_access('delete', $config);
-  $title = $delete ? t('The meta tag defaults for @label have been deleted.', array('@label' => $label)) : t('The meta tag defaults for @label have been reverted.', array('@label' => $label));
-  drupal_set_message($title);
+    $label = metatag_config_instance_label($config->instance);
+    $delete = metatag_config_access('delete', $config);
+    $title = $delete ? t('The meta tag defaults for @label have been deleted.', array('@label' => $label)) : t('The meta tag defaults for @label have been reverted.', array('@label' => $label));
+    drupal_set_message($title);
+  }
+  else {
+    drupal_set_message(t('Configuration record could not be found.'), 'warning');
+  }
 
   $form_state['redirect'] = 'admin/config/search/metatags';
 }
@@ -542,7 +547,7 @@ function metatag_bulk_revert_form_submit($form, &$form_state) {
 /**
  * Batch callback: delete custom metatags for selected bundles.
  */
-function metatag_bulk_revert_batch_operation($entity_type, $bundle, $tags, $languages, &$context) {
+function metatag_bulk_revert_batch_operation($entity_type, $bundle, array $tags, array $languages, array &$context) {
   if (!isset($context['sandbox']['current'])) {
     $context['sandbox']['count'] = 0;
     $context['sandbox']['current'] = 0;
@@ -863,6 +868,19 @@ function metatag_admin_settings_form() {
     '#collapsed' => TRUE,
     '#description' => t('Many meta tags may be shortened to a certain length. To reset to the default, leave the field blank. To keep the entire meta tag, regardless of length, set the value to zero (0). Note: the meta tag will be shortened <em>after</em> the tokens have been replaced, not before.'),
   );
+
+  // Optional support for the Maxlenth module.
+  $form['lengths']['metatag_use_maxlength'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use Maxlength module to force these limits?'),
+    '#default_value' => variable_get('metatag_use_maxlength', TRUE),
+    '#description' => t('Because of how tokens are processed in meta tags, use of the Maxlength module may not provide an accurate representation of the actual current length of each meta tag, so it may cause more problem than it is worth. '),
+  );
+  if (!module_exists('maxlength')) {
+    $form['lengths']['metatag_use_maxlength']['#disabled'] = TRUE;
+    $form['lengths']['metatag_use_maxlength']['#description'] = t('Install the Maxlength module to enable this option.');
+  }
+
   $info = metatag_get_info();
   $groups = $info['groups'];
   $tags = $info['tags'];
