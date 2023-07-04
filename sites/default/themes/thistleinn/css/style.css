@@ -2343,9 +2343,13 @@ textarea {
 }
 
 .view-menus .category .menu-item {
-	    display: flex;
-    	gap: 16px;
-    	margin-bottom: 16px;
+	  display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.view-menus .category .menu-heading {
+			max-width: 645px;
 }
 
 .view-menus .category .menu-item .views-field-field-extras {
@@ -2361,7 +2365,7 @@ textarea {
 .view-menus .category .menu-item .views-field-field-extras .item-list,
 .view-menus .category .menu-item .views-field-field-extras .item-list li {
 		margin-bottom: 0;
-		font-size: 11px;
+		font-size: 10px;
 }
 
 .view-menus .view-footer {
