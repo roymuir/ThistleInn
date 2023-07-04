@@ -2368,8 +2368,8 @@ textarea {
 .view-menus .category .menu-item .views-field-field-extras .item-list li {
 		margin-bottom: 0;
 		font-size: 10px;
-		padding: 0;
-		background: none;
+		padding: 0 !important;
+		background: none !important;
 }
 
 .view-menus .view-footer {
