@@ -2346,6 +2346,8 @@ textarea {
 	  display: flex;
     gap: 16px;
     margin-bottom: 16px;
+    background: none !important;
+    padding: 0 !important;
 }
 
 .menu-item-heading {
