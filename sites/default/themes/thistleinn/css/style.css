@@ -2352,6 +2352,18 @@ textarea {
 		color: #b4873d;
 }
 
+.view-menus .category .menu-item .views-field-field-extras .item-list ul {
+		display: flex;
+    column-gap: 16px;
+    margin-bottom: 0;
+}
+    
+.view-menus .category .menu-item .views-field-field-extras .item-list,
+.view-menus .category .menu-item .views-field-field-extras .item-list li {
+		margin-bottom: 0;
+		font-size: 11px;
+}
+
 .view-menus .view-footer {
 		border-top: 1px solid #b4873d;
     border-bottom: 1px solid #b4873d;
