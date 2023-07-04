@@ -2348,8 +2348,8 @@ textarea {
     margin-bottom: 16px;
 }
 
-.view-menus .category .menu-heading {
-			max-width: 645px;
+.menu-item-heading {
+		max-width: 645px;
 }
 
 .view-menus .category .menu-item .views-field-field-extras {
