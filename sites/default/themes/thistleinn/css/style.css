@@ -1728,9 +1728,12 @@ label.option {vertical-align:middle;}
 }
 
 /*.node-type-basic-page-image-slider */.field-name-field-pdf {
-	border-top: 1px solid #b4873d;
-	padding-top: 23px;
+	    border-top: 1px solid #b4873d;
+    padding-top: 23px;
     margin-top: 50px;
+    border-bottom: 1px solid #b4873d;
+    padding-bottom: 22px;
+    margin-bottom: 25px;
 }
 
 .field-name-field-newsletter-url {
@@ -2381,6 +2384,10 @@ textarea {
 .view-menus .view-footer p {
 		font-size: 10px;
 		margin-bottom: 4px;
+}
+
+#block-views-menus-block-1 {
+	margin-bottom: 0;
 }
 
 
