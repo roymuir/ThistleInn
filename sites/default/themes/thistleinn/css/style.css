@@ -2310,6 +2310,9 @@ textarea {
         height: auto;
         padding-bottom: 30px;
     }
+    .block-menu .content > ul.menu > li {
+    	width: 100%;
+    }
     #block-block-18 {
         display: block;
     }
