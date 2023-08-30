@@ -327,22 +327,30 @@ body {
     filter: FlipH;
     -ms-filter: "FlipH";
 }
-#block-menu-menu-main-menu-right ul {
-    text-align: right;
+.block-menu .content > ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 5px;
 }
-#block-menu-menu-main-menu-left .content > ul.menu > li,
-#block-menu-menu-main-menu-right .content > ul.menu > li {
-    display: inline-block;
-    margin-right: 6px;
-    padding: 0;
+#block-menu-menu-main-menu-left .content > ul.menu {
+	padding-right: 40px;
+	justify-content: flex-end;
+}
+#block-menu-menu-main-menu-right .content > ul.menu {
+	padding-left: 40px;
+}
+.block-menu .content > ul.menu > li {
     position: relative;
+    padding: 0;
 }
-#block-menu-menu-main-menu-left .content > ul.menu > li:last-child,
-#block-menu-menu-main-menu-right .content > ul.menu > li:last-child {
+.block-menu .content > ul.menu > li:last-child {
     margin-right: 0;
 }
-#block-menu-menu-main-menu-left li a,
-#block-menu-menu-main-menu-right li a {
+.block-menu li.expanded {
+	list-style: none;
+}
+.block-menu li a {
     font-size: 14px;
     font-family: "Montserrat", sans-serif;
     font-weight: 700;
@@ -2152,6 +2160,13 @@ textarea {
     #header .col-3 #block-block-15 {
         padding-left: 10%;
     }
+    .block-menu .content > ul.menu::before {
+    	content: none;
+    }
+
+    .block-menu li a {
+    	font-size: 11px;
+    }
     .container-24,
     .container-24 .grid-24 {
         width: 100% !important;
@@ -2207,11 +2222,15 @@ textarea {
     #block-menu-menu-main-menu-right .content > ul.menu > li {
         margin-right: 0;
     }
+    
+	.block-menu .content > ul.menu {
+    	padding-top: 5px;
+    	padding-bottom: 3px;
+    }
     #block-menu-menu-main-menu-left li a,
     #block-menu-menu-main-menu-right li a {
         font-size: 11px;
-        padding-left: 5px;
-        padding-right: 5px;
+        padding: 0 5px;
     }
     .sidebar-second #content,
     #sidebar-second {
