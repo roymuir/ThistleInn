@@ -1490,8 +1490,8 @@ hr {
     margin: 40px 0 40px 0;
 }
 
-.field-name-field-basic-page-image,
-.field-name-field-video {
+.not-front .field-name-field-basic-page-image,
+.not-front .field-name-field-video {
     margin-bottom: 40px;
 }
 
