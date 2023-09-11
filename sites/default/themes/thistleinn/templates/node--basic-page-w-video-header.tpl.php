@@ -113,21 +113,18 @@
       <?php  
         print render($content['field_video']);
       ?>
-        <div class="divider-wrapper">
-          <div class="hr left"></div>
-          <div class="hr right"></div>
-        </div>
-      </div>  
       <?php
       endif;
       ?>
-      <h2 class="title" id="page-title"><?php print $title; ?></h2>
       <?php
       if ($content['body']):
         print render($content['body']);
       endif;
       if ($content['field_pdf']):
         print render($content['field_pdf']);
+      endif;
+      if ($content['field_newsletter_url']):
+        print render($content['field_newsletter_url']);
       endif;
     ?>
   </div><!-- /.content -->

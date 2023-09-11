@@ -137,7 +137,7 @@
                               <?php endif; ?>
                             
                             <?php if (isset($node) && $node->type != 'basic_page_image_slider' && $node->type != 'page' && $node->type != 'menu') : ?>
-                              <h2 class="title" id="page-title"><?php print $title; ?></h2>
+                              <h1 class="title" id="page-title"><?php print $title; ?></h1>
                             <?php endif; ?>
                                                         
                             <?php if ($tabs): ?>

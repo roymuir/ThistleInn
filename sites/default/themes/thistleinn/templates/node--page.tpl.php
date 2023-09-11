@@ -101,6 +101,7 @@
   <?php endif; ?>
 
   <div class="content"<?php print $content_attributes; ?>>
+    <h1 class="title" id="page-title"><?php print $title; ?></h1>
     <?php
       // We hide the comments, tags and links now so that we can render them later.
       hide($content['comments']);
@@ -111,7 +112,6 @@
         print render($content['field_basic_page_image']);
       endif;
       ?>
-      <h2 class="title" id="page-title"><?php print $title; ?></h2>
       <?php
       if ($content['body']):
         print render($content['body']);

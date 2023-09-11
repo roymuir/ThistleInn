@@ -70,7 +70,7 @@ dd {
     margin-left: 0;
 }
 #main-wrapper {
-    padding: 0 0 50px 0;
+    padding: 0 0 32px 0;
     margin-bottom: 3px;
     border-bottom: 1px solid #b4873d;
 }
@@ -356,7 +356,7 @@ body {
     font-weight: 700;
     text-transform: uppercase;
     color: #3f3d4e;
-    padding: 6px 9px;
+    padding: 6px 8px;
     display: block;
 }
 #block-menu-menu-main-menu-left li a:hover,
@@ -430,7 +430,7 @@ body {
 /* ------------------------- SLIDER ------------------------- */
 .flexslider-wrapper {
     position: relative;
-    margin-bottom: 45px;
+    margin-bottom: 32px;
 }
 .flexslider {
     border: none;
@@ -457,7 +457,7 @@ body {
     box-sizing: border-box;
 }
 .flex-control-nav li {
-    margin: 0 4px;
+    margin: 0 3px;
 }
 .flex-control-nav li a {
     width: 8px;
@@ -601,9 +601,9 @@ body {
 #sidebar-second .views-row-last.views-row {
     margin-bottom: 0px;
 }
-#content .block {
+/*#content .block {
     margin-bottom: 50px;
-}
+}*/
 #main-wrapper .block {
 }
 #main-wrapper .block#block-views-home-page-slider-block {
@@ -1436,7 +1436,7 @@ ul.contextual-links li a:hover {
     margin: 0 0px 20px 0;
 }
 .field-type-image {
-    margin-bottom: 60px;
+    margin-bottom: 32px;
 }
 .profile .user-picture {
     margin-left: 20px;
@@ -1477,6 +1477,12 @@ label.option {
 }
 
 /* ------------------------- CUSTOM ------------------------- */
+
+.field-name-field-basic-page-image,
+.field-name-field-video {
+    margin-bottom: 40px;
+}
+
 .views-field-field-video {
     text-align: center;
 }
@@ -1599,11 +1605,11 @@ label.option {
 /*.node-type-basic-page-image-slider */
 .field-name-field-pdf {
     border-top: 1px solid #b4873d;
-    padding-top: 23px;
-    margin-top: 50px;
-    border-bottom: 1px solid #b4873d;
+    padding-top: 24px;
+    margin-top: 48px;
+    /*border-bottom: 1px solid #b4873d;
     padding-bottom: 22px;
-    margin-bottom: 25px;
+    margin-bottom: 25px;*/
 }
 .field-name-field-newsletter-url {
     border-top: 1px solid #b4873d;
@@ -1615,8 +1621,7 @@ label.option {
 }
 .field-name-field-pdf .field-item {
     display: inline-block;
-    margin-right: 13px;
-    margin-bottom: 7px;
+    margin-right: 12px;
     margin-top: 7px;
 }
 .field-name-field-pdf .file-icon {
@@ -1952,14 +1957,14 @@ textarea {
     margin-top: 30px;
 }
 /* better menu markup */
-.node--menu h3 {
+/*.node--menu h3 {
     color: #b78c3c;
     text-transform: uppercase;
     font-style: normal;
     border-top: 1px dotted #595959;
     padding: 10px 0;
     margin: 0 0 6px 0;
-}
+}*/
 .node--menu dl {
     color: #b78c3c;
 }
