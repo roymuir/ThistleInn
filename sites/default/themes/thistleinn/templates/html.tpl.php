@@ -84,8 +84,9 @@ $html_attributes = "lang=\"{$language->language}\" dir=\"{$language->dir}\" {$rd
     </script>
     <noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/tr?id=1623669277893907&amp;ev=PixelInitialized" /></noscript>
   <!--  -->
-  
-<script type="text/javascript" src="//downloads.mailchimp.com/js/signup-forms/popup/unique-methods/embed.js" data-dojo-config="usePlainJson: true, isDebug: false"></script><script type="text/javascript">window.dojoRequire(["mojo/signup-forms/Loader"], function(L) { L.start({"baseUrl":"mc.us4.list-manage.com","uuid":"e939f582052959bf55e339b36","lid":"b7d9f400fd","uniqueMethods":true}) })</script>
+
+<!-- Mailchimp pop up -->
+<script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/e939f582052959bf55e339b36/c9e004f58aed62bb2cab601c8.js");</script>
   
 </head>
 <body id="body" class="<?php print $classes; ?>" <?php print $attributes;?>>
